@@ -1,0 +1,83 @@
+.tableproduct {
+  thead {
+    th {
+      border-bottom: 1px solid white;
+      outline: none !important;
+      &:focus {
+        background: white !important;
+      }
+    }
+  }
+  td,
+  th {
+    border-color: white;
+    &:focus {
+      background-color: white;
+    }
+  }
+  tbody {
+    tr:first-child {
+      td {
+        border-top: none;
+      }
+    }
+  }
+  &.table-hover {
+    tbody {
+      tr {
+        &:hover {
+          background: black;
+        }
+      }
+    }
+  }
+  tr.active,
+  th.active {
+    background: black;
+  }
+  .thead-inverse {
+    th {
+      background: black;
+    }
+  }
+  .thead-default {
+    th {
+      background: black;
+    }
+  }
+
+  &.table-striped {
+    tbody tr:nth-of-type(odd) {
+      background: #f2f4f8;
+    }
+  }
+
+  &.table-vertical-middle {
+    td,
+    th {
+      vertical-align: middle;
+    }
+  }
+}
+
+.rowproduct {
+    background-color: rgb(235, 235, 245);
+  // background-color: #eaedf5;
+  border: 1px solid black !important;
+  //   color: black !important;
+}
+.rowproduct:hover {
+  background-color: #e2e3e5 !important;
+}
+.rowproduct:active {
+  background-color: #e2e3e5 !important;
+}
+
+.cardstatus {
+  height: 264px;
+}
+
+.ant-table-expanded-row {
+  background-color: rgb(241, 241, 250) !important;
+  // background-color: rgb(208, 215, 226) !important;
+}

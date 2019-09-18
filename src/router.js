@@ -27,30 +27,30 @@ const routes = [
   },
 
   // Dashboards
-  // {
-  //   path: '/dashboard/alpha',
-  //   component: loadable(() => import('pages/dashboard/alpha')),
-  // },
-  // {
-  //   path: '/dashboard/beta',
-  //   component: loadable(() => import('pages/dashboard/beta')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/dashboard/crypto',
-  //   component: loadable(() => import('pages/dashboard/crypto')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/dashboard/gamma',
-  //   component: loadable(() => import('pages/dashboard/gamma')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/dashboard/docs',
-  //   component: loadable(() => import('pages/dashboard/docs')),
-  //   exact: true,
-  // },
+  {
+    path: '/dashboard/alpha',
+    component: loadable(() => import('pages/dashboard/alpha')),
+  },
+  {
+    path: '/dashboard/beta',
+    component: loadable(() => import('pages/dashboard/beta')),
+    exact: true,
+  },
+  {
+    path: '/dashboard/crypto',
+    component: loadable(() => import('pages/dashboard/crypto')),
+    exact: true,
+  },
+  {
+    path: '/dashboard/gamma',
+    component: loadable(() => import('pages/dashboard/gamma')),
+    exact: true,
+  },
+  {
+    path: '/dashboard/docs',
+    component: loadable(() => import('pages/dashboard/docs')),
+    exact: true,
+  },
 
   // Default Pages
   {
@@ -85,26 +85,26 @@ const routes = [
   },
 
   // Apps
-  // {
-  //   path: '/apps/messaging',
-  //   component: loadable(() => import('pages/apps/messaging')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/apps/mail',
-  //   component: loadable(() => import('pages/apps/mail')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/apps/profile',
-  //   component: loadable(() => import('pages/apps/profile')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/apps/gallery',
-  //   component: loadable(() => import('pages/apps/gallery')),
-  //   exact: true,
-  // },
+  {
+    path: '/apps/messaging',
+    component: loadable(() => import('pages/apps/messaging')),
+    exact: true,
+  },
+  {
+    path: '/apps/mail',
+    component: loadable(() => import('pages/apps/mail')),
+    exact: true,
+  },
+  {
+    path: '/apps/profile',
+    component: loadable(() => import('pages/apps/profile')),
+    exact: true,
+  },
+  {
+    path: '/apps/gallery',
+    component: loadable(() => import('pages/apps/gallery')),
+    exact: true,
+  },
 
   // Ecommerce
   {
@@ -144,48 +144,48 @@ const routes = [
   },
 
   // Layout
-  // {
-  //   path: '/layout/bootstrap',
-  //   component: loadable(() => import('pages/layout/bootstrap')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/layout/card',
-  //   component: loadable(() => import('pages/layout/card')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/layout/utilities',
-  //   component: loadable(() => import('pages/layout/utilities')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/layout/typography',
-  //   component: loadable(() => import('pages/layout/typography')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/layout/mail-templates',
-  //   component: loadable(() => import('pages/layout/mail-templates')),
-  //   exact: true,
-  // },
+  {
+    path: '/layout/bootstrap',
+    component: loadable(() => import('pages/layout/bootstrap')),
+    exact: true,
+  },
+  {
+    path: '/layout/card',
+    component: loadable(() => import('pages/layout/card')),
+    exact: true,
+  },
+  {
+    path: '/layout/utilities',
+    component: loadable(() => import('pages/layout/utilities')),
+    exact: true,
+  },
+  {
+    path: '/layout/typography',
+    component: loadable(() => import('pages/layout/typography')),
+    exact: true,
+  },
+  {
+    path: '/layout/mail-templates',
+    component: loadable(() => import('pages/layout/mail-templates')),
+    exact: true,
+  },
 
   // Icons
-  // {
-  //   path: '/icons/fontawesome',
-  //   component: loadable(() => import('pages/icons/fontawesome')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/icons/linear',
-  //   component: loadable(() => import('pages/icons/linear')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/icons/icomoon',
-  //   component: loadable(() => import('pages/icons/icomoon')),
-  //   exact: true,
-  // },
+  {
+    path: '/icons/fontawesome',
+    component: loadable(() => import('pages/icons/fontawesome')),
+    exact: true,
+  },
+  {
+    path: '/icons/linear',
+    component: loadable(() => import('pages/icons/linear')),
+    exact: true,
+  },
+  {
+    path: '/icons/icomoon',
+    component: loadable(() => import('pages/icons/icomoon')),
+    exact: true,
+  },
 
   // Charts
   {
@@ -210,52 +210,52 @@ const routes = [
   },
 
   // // Blog
-  // {
-  //   path: '/blog/feed',
-  //   component: loadable(() => import('pages/blog/feed')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/blog/post',
-  //   component: loadable(() => import('pages/blog/post')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/blog/add-blog-post',
-  //   component: loadable(() => import('pages/blog/add-blog-post')),
-  //   exact: true,
-  // },
+  {
+    path: '/blog/feed',
+    component: loadable(() => import('pages/blog/feed')),
+    exact: true,
+  },
+  {
+    path: '/blog/post',
+    component: loadable(() => import('pages/blog/post')),
+    exact: true,
+  },
+  {
+    path: '/blog/add-blog-post',
+    component: loadable(() => import('pages/blog/add-blog-post')),
+    exact: true,
+  },
 
   // // YouTube
-  // {
-  //   path: '/youtube/feed',
-  //   component: loadable(() => import('pages/youtube/feed')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/youtube/view',
-  //   component: loadable(() => import('pages/youtube/view')),
-  //   exact: true,
-  // },
+  {
+    path: '/youtube/feed',
+    component: loadable(() => import('pages/youtube/feed')),
+    exact: true,
+  },
+  {
+    path: '/youtube/view',
+    component: loadable(() => import('pages/youtube/view')),
+    exact: true,
+  },
 
   // // GitHub
-  // {
-  //   path: '/github/explore',
-  //   component: loadable(() => import('pages/github/explore')),
-  //   exact: true,
-  // },
-  // {
-  //   path: '/github/discuss',
-  //   component: loadable(() => import('pages/github/discuss')),
-  //   exact: true,
-  // },
+  {
+    path: '/github/explore',
+    component: loadable(() => import('pages/github/explore')),
+    exact: true,
+  },
+  {
+    path: '/github/discuss',
+    component: loadable(() => import('pages/github/discuss')),
+    exact: true,
+  },
 
   // // AntDesign
-  // {
-  //   path: '/antd',
-  //   component: loadable(() => import('pages/antd')),
-  //   exact: true,
-  // },
+  {
+    path: '/antd',
+    component: loadable(() => import('pages/antd')),
+    exact: true,
+  },
 ]
 
 class Router extends React.Component {

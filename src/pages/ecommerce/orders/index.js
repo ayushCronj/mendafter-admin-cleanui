@@ -1,19 +1,20 @@
 /* eslint no-underscore-dangle: 0 */
 import React from 'react'
-import { Table, Button, Row, Col, Collapse, Icon, Dropdown, Menu, Skeleton } from 'antd'
+import { Table, Button, Row, Collapse, Col, Icon, Dropdown, Menu, Skeleton, Card } from 'antd'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
+import './custom.scss'
 
 const { Panel } = Collapse;
 const { SubMenu } = Menu;
 // const Loader = () => <h4 style={{ textAlign: "center" }}>Products Data is being prepared</h4>;
-// const Loader1 = () => <div> <h3>Products are being loaded..!!</h3></div>;
 
 @connect(({ orders }) => ({ orders }))
 class Orders extends React.Component {
   state = {
     // loading: false,
     expandedKeys: [1],
+    filterClick: false
   }
 
   componentDidMount() {
@@ -51,6 +52,9 @@ class Orders extends React.Component {
     const { dispatch } = this.props
     dispatch({
       type: 'orders/GET_LIST'
+    })
+    this.setState({
+      filterClick: false
     })
   }
 
@@ -99,6 +103,9 @@ class Orders extends React.Component {
       payload: {
         values
       }
+    })
+    this.setState({
+      filterClick: true
     })
   }
 
@@ -163,12 +170,16 @@ class Orders extends React.Component {
         values
       }
     })
+    this.setState({
+      filterClick: true
+    })
   }
 
   render() {
+    // let count = 0
     // const { searchText, filterDropdownVisible, filtered } = this.state
     const { orders } = this.props
-    const { expandedKeys } = this.state
+    const { expandedKeys, filterClick } = this.state
 
     const menu = (
       <Menu>
@@ -192,7 +203,6 @@ class Orders extends React.Component {
         key: 'number',
         render: text => (
           <p>
-
             {text ? `#${text}` : `#000000`}
           </p>
         ),
@@ -213,7 +223,6 @@ class Orders extends React.Component {
         key: 'customername',
         render: text => (
           <p>
-
             {text ? `${text}` : ''}
           </p>
         ),
@@ -252,7 +261,7 @@ class Orders extends React.Component {
         title: 'Grand Total',
         dataIndex: 'meta.display_price.with_tax.formatted',
         key: 'total',
-        render: text => <span>{`${text}`}</span>,
+        render: text => <p>{`${text}`}</p>,
         sorter: (a, b) => parseInt(a.meta.display_price.with_tax.amount, 10) - parseInt(b.meta.display_price.with_tax.amount, 10),
       },
       {
@@ -260,7 +269,7 @@ class Orders extends React.Component {
         dataIndex: 'payment',
         key: 'status',
         render: (text) => (
-          <span
+          <p
             className={
               text === 'paid'
                 ? 'font-size-12 badge badge-primary'
@@ -268,59 +277,59 @@ class Orders extends React.Component {
             }
           >
             {text}
-          </span>
+          </p>
         ),
         filters: [
           {
-            text: 'paid',
+            text: 'Paid Orders',
             value: 'paid',
           },
           {
-            text: 'unpaid',
+            text: 'Unpaid Orders',
             value: 'unpaid',
           }
         ],
         filterMultiple: false,
         onFilter: (value, record) => record.payment.indexOf(value) === 0,
       },
-      {
-        title: 'Shipping Status',
-        dataIndex: 'shipping',
-        key: 'shippingstatus',
-        render: (text) => (
-          <span
-            className={
-              text === 'fulfilled'
-                ? 'font-size-12 badge badge-primary'
-                : 'font-size-12 badge badge-default'
-            }
-          >
-            {text}
-          </span>
-        ),
-        filters: [
-          {
-            text: 'Fulfilled',
-            value: 'fulfilled',
-          },
-          {
-            text: 'Unfulfilled',
-            value: 'unfulfilled',
-          }
-        ],
-        filterMultiple: false,
-        onFilter: (value, record) => record.shipping.indexOf(value) === 0,
-      },
+      // {
+      //   title: 'Shipping Status',
+      //   dataIndex: 'shipping',
+      //   key: 'shippingstatus',
+      //   render: (text) => (
+      //     <span
+      //       className={
+      //         text === 'fulfilled'
+      //           ? 'font-size-12 badge badge-primary'
+      //           : 'font-size-12 badge badge-default'
+      //       }
+      //     >
+      //       {text}
+      //     </span>
+      //   ),
+      //   filters: [
+      //     {
+      //       text: 'Fulfilled Orders',
+      //       value: 'fulfilled',
+      //     },
+      //     {
+      //       text: 'Unfulfilled Orders',
+      //       value: 'unfulfilled',
+      //     }
+      //   ],
+      //   filterMultiple: false,
+      //   onFilter: (value, record) => record.shipping.indexOf(value) === 0,
+      // },
       {
         title: 'Action',
         key: 'action',
         dataIndex: 'id',
         render: (id) => (
-          <span>
+          <p>
             <Button onClick={() => this.handleclick(id)} icon="edit" className="mr-1" size="small">
               View
             </Button>
-          </span>
+          </p>
         ),
       },
     ]
@@ -360,15 +369,25 @@ class Orders extends React.Component {
         title: 'Product Price',
         dataIndex: 'meta.display_price.with_tax.unit.formatted',
         key: 'total',
-        render: text => <span>{`${text}`}</span>,
+        render: text => <p>{`${text}`} </p>,
         sorter: (a, b) => parseInt(a.meta.display_price.with_tax.unit.amount, 10) - parseInt(b.meta.display_price.with_tax.unit.amount, 10),
       },
       {
         title: 'Product Quantity',
         dataIndex: 'quantity',
         key: 'quantity',
+        render: text => <p> {`${text}`}</p>,
+        sorter: (a, b) => parseInt(a.quantity, 10) - parseInt(b.quantity, 10),
       }
     ]
+
+    const customPanelStyle = {
+      background: '#f7f7f7',
+      borderRadius: 4,
+      // marginBottom: 24,
+      border: 0,
+      overflow: 'hidden',
+    };
 
     return (
       <div>
@@ -382,13 +401,13 @@ class Orders extends React.Component {
           <div className="card-body">
             <Collapse
               accordion
-              style={{ width: "40vw", textAlign: "center", marginLeft: "28%" }}
+              style={{ width: "40vw", textAlign: "center", marginLeft: "25%" }}
               expandIcon={({ isActive }) => <Icon type="caret-right" rotate={isActive ? 90 : 0} />}
             >
-              <Panel header="Filter Panel" key="1">
-                <h5> <u>Choose a Filter </u></h5>
-                <br />
-                <div>
+              <Panel header="Filter Panel" key="1" style={customPanelStyle}>
+                <div style={{ backgroundColor: '#f7f7f7' }}>
+                  <h5> Choose a Filter </h5>
+                  <br />
                   <Dropdown overlay={menu}>
                     <a href="#">
                       Filter Dropdown &nbsp; <Icon type="down" />
@@ -397,21 +416,25 @@ class Orders extends React.Component {
                 </div>
                 <br />
                 <p> OR </p>
-                <div> Filter by Customer Name: &nbsp;
-                  <input
-                    // style={{ width: "10vw" }}
-                    className="form-control name"
-                    ref={(n) => { this.name = n; }}
-                    type="text"
-                  />
-                  &nbsp;
-                  <Button type="primary" onClick={this.namefilterclicked}>Filter </Button>
+                <div style={{ backgroundColor: '#f7f7f7' }}>
+                  Filter by Customer Name: &nbsp;
+                  <span>
+                    <input
+                      style={{ width: "10vw", margin: "auto", borderRadius: "10%" }}
+                      // className="form-control name"
+                      ref={(n) => { this.name = n; }}
+                      type="text"
+                    />
+                    &nbsp;
+                    <Button type="primary" onClick={this.namefilterclicked}> Filter </Button>
+                  </span>
                 </div>
               </Panel>
             </Collapse>
             <br />
-            <div style={{ marginLeft: "48%" }}><Button type="primary" onClick={this.showall}> Show All </Button>
-            </div>
+            {filterClick ?
+              <div style={{ marginLeft: "48%" }}><Button type="primary" onClick={this.showall}> Reset Filters </Button>
+              </div> : null}
             <br />
             <Table
               className="utils__scrollTable"
@@ -424,41 +447,15 @@ class Orders extends React.Component {
               expandIconColumnIndex={7}
               rowKey={record => record.id}
               expandedRowRender={(record) =>
-                <div>
-                  <h2 style={{ textAlign: "center" }}> <u> Order Number - {record.orderNumber}</u></h2>
-                  <br />
-                  <Row>
-                    <Col span={12} style={{ textAlign: "center" }}>
-                      <h4> <u>Billing Details </u></h4>
-                      <p><strong>Name : </strong>{record.billing_address.first_name}&nbsp;{record.billing_address.last_name}</p>
-                      <p><strong>Address :</strong> </p>
-                      <p>Line 1 : {record.billing_address.line_1}</p>
-                      <p>Line 2 :{record.billing_address.line_2}</p>
-                      <p> City: {record.billing_address.city}</p>
-                      <p> County: {record.billing_address.county}</p>
-                      <p> Country: {record.billing_address.country}</p>
-                      <p> Postal Code: {record.billing_address.postcode}</p>
-                    </Col>
-                    <Col span={12} style={{ textAlign: "center" }}>
-                      <h4> <u>Shipping Details </u></h4>
-                      <p><strong>Name: </strong>{record.shipping_address.first_name}&nbsp;{record.shipping_address.last_name} </p>
-                      <p> <strong> Address: </strong></p>
-                      <p> Line 1: {record.shipping_address.line_1} </p>
-                      <p>  Line 2: {record.shipping_address.line_2} </p>
-                      <p>  City: {record.shipping_address.city}</p>
-                      <p> County: {record.shipping_address.county}</p>
-                      <p>   Country : {record.shipping_address.country}</p>
-                      <p>Postal Code : {record.shipping_address.postcode}</p>
-                      <p> Phone Number : {record.shipping_address.phone_number ? record.shipping_address.phone_number : "0000000000"} </p>
-                    </Col>
-                  </Row>
-                  <hr />
+                // <div style={{ backgroundColor: "#ffffff" }}>
+                <Card>
                   {orders.details.orders ?
                     <div>
-                      <h4 style={{ textAlign: "center" }}><u>Product Details</u></h4>
                       <Row>
                         <Table
-                          className="utils__scrollTable"
+                          className="tableproduct"
+                          rowClassName="rowproduct"
+                          bordered
                           scroll={{ x: '100%' }}
                           columns={columns1}
                           dataSource={orders.details.orders.data}
@@ -467,7 +464,102 @@ class Orders extends React.Component {
                         />
                       </Row>
                     </div> : <Skeleton active />}
-                </div>
+                  {/* <hr /> */}
+                  <br />
+                  {/* {orders.details.orders ? orders.details.orders.data.map((item) => {
+                    if (item.trackingID === null) {
+                      count += 1;
+                    }
+                    return null
+                  }) : null} */}
+                  {/* <Row style={{ display: "flex", justifyContent: "center", paddingBottom: "1%" }}> */}
+                  {/* <Col span={12} style={{ textAlign: "left" }}> */}
+                  {/* <div>
+                      <Card title="Billing Address">
+                        <p>{record.billing_address.first_name}&nbsp;{record.billing_address.last_name}</p>
+                        <p> {record.billing_address.line_1}</p>
+                        <p>{record.billing_address.line_2}</p>
+                        <p>  {record.billing_address.city}
+                          , {record.billing_address.county}
+                        </p>
+                        <p>  {record.billing_address.country}
+                          , {record.billing_address.postcode}
+                        </p>
+                      </Card> */}
+                  {/* </Col> */}
+                  {/* </div> */}
+                  {/* <Col span={12}> */}
+                  {/* <div style={{ marginLeft: "1%" }}>
+                      <Card title="Shipping Address">
+
+                        <p>{record.shipping_address.first_name}&nbsp;{record.shipping_address.last_name} </p>
+                        <p> {record.shipping_address.line_1} </p>
+                        <p>   {record.shipping_address.line_2} </p>
+                        <p>  {record.shipping_address.city}
+                          , {record.shipping_address.county}
+                        </p>
+                        <p>  {record.shipping_address.country}
+                          , {record.shipping_address.postcode}
+                        </p>
+                      </Card>
+                    </div> */}
+                  {/* </Col> */}
+                  {/* <Col span={8} style={{ textAlign: "left" }}>
+                      <Card className="cardstatus" title="Shipping Details">
+                        {orders.details.orders ?
+                          <div className="divstatus">
+
+                            {/* {orders.details.orders.data.length === count ?
+                              (<p> Status - Unfulfilled </p>) : null}
+                            {count === 0 ?
+                              (<p> Shipping Status - Fulfilled </p>) : null}
+                            {count > 0 && count < orders.details.orders.data.length ?
+                              (<p> Partially Fulfilled </p>) : null} 
+                            NA
+                          </div> : <Skeleton active />}
+                      </Card>
+                    </Col> */}
+                  {/* </Row> */}
+                  {/* </Row> */}
+                  <Row>
+                    <Col span={8} style={{ marginLeft: "17%" }}>
+                      <div>
+                        <Card title="Billing Address">
+                          {/* <h5> Billing Details </h5> */}
+                          <p>{record.billing_address.first_name}&nbsp;{record.billing_address.last_name}</p>
+                          {/* <p><strong></strong> </p> */}
+                          <p> {record.billing_address.line_1}</p>
+                          <p>{record.billing_address.line_2}</p>
+                          <p>  {record.billing_address.city}
+                            , {record.billing_address.county}
+                          </p>
+                          <p>  {record.billing_address.country}
+                            , {record.billing_address.postcode}
+                          </p>
+                        </Card>
+                      </div>
+                    </Col>
+                    {/* <Col span={8}>
+                      <p style={{ display: "none" }}> Hi  </p>
+                    </Col> */}
+                    <Col span={8}>
+                      <div style={{ marginLeft: "1%" }}>
+                        <Card title="Shipping Address">
+                          <p>{record.shipping_address.first_name}&nbsp;{record.shipping_address.last_name} </p>
+                          <p> {record.shipping_address.line_1} </p>
+                          <p>   {record.shipping_address.line_2} </p>
+                          <p>  {record.shipping_address.city}
+                            , {record.shipping_address.county}
+                          </p>
+                          <p>  {record.shipping_address.country}
+                            , {record.shipping_address.postcode}
+                          </p>
+                        </Card>
+                      </div>
+                    </Col>
+                  </Row>
+                  {/* </div> */}
+                </Card>
               }
             />
           </div>
