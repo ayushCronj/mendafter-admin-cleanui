@@ -1,12 +1,13 @@
 /* eslint no-underscore-dangle: 0 */
 import React from 'react'
-import { Table, Button, Row, Collapse, Col, Icon, Dropdown, Menu, Skeleton, Card } from 'antd'
+import { Table, Button, Row, Collapse, Icon, Col, Dropdown, Menu, Skeleton, Card } from 'antd'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import './custom.scss'
 
 const { Panel } = Collapse;
 const { SubMenu } = Menu;
+// const { TabPane } = Tabs;
 // const Loader = () => <h4 style={{ textAlign: "center" }}>Products Data is being prepared</h4>;
 
 @connect(({ orders }) => ({ orders }))
@@ -206,6 +207,7 @@ class Orders extends React.Component {
             {text ? `#${text}` : `#000000`}
           </p>
         ),
+        sorter: (a, b) => parseInt(a.orderNumber, 10) - parseInt(b.orderNumber, 10),
       },
       {
         title: 'Order Date',
@@ -268,7 +270,7 @@ class Orders extends React.Component {
         title: 'Payment Status',
         dataIndex: 'payment',
         key: 'status',
-        render: (text) => (
+        render: (text, record) => (
           <p
             className={
               text === 'paid'
@@ -276,6 +278,7 @@ class Orders extends React.Component {
                 : 'font-size-12 badge badge-default'
             }
           >
+            {console.log(record)}
             {text}
           </p>
         ),
@@ -287,6 +290,66 @@ class Orders extends React.Component {
           {
             text: 'Unpaid Orders',
             value: 'unpaid',
+          }
+        ],
+        filterMultiple: false,
+        onFilter: (value, record) => record.payment.indexOf(value) === 0,
+      },
+      // {
+      //   title: 'Shipping Status',
+      //   dataIndex: 'shipping',
+      //   key: 'shipstatus',
+      //   render: (text) => (
+      //     <p
+      //       className={
+      //         text === 'fulfilled'
+      //           ? 'font-size-12 badge badge-primary'
+      //           : 'font-size-12 badge badge-default'
+      //       }
+      //     >
+      //       {text}
+      //     </p>
+      //   ),
+      //   filters: [
+      //     {
+      //       text: 'Unfulfilled Orders',
+      //       value: 'unfulfilled',
+      //     },
+      //     {
+      //       text: 'Partially Fulfilled Orders',
+      //       value: 'partiallyfulfilled',
+      //     },
+      //     {
+      //       text: 'Unfulfilled Orders',
+      //       value: 'unfulfilled',
+      //     }
+      //   ],
+      //   filterMultiple: false,
+      //   onFilter: (value, record) => record.payment.indexOf(value) === 0,
+      // },
+      {
+        title: 'Order Status',
+        dataIndex: 'status',
+        key: 'orderstatus',
+        render: (text) => (
+          <p
+            className={
+              text === 'complete'
+                ? 'font-size-12 badge badge-primary'
+                : 'font-size-12 badge badge-default'
+            }
+          >
+            {text}
+          </p>
+        ),
+        filters: [
+          {
+            text: 'Completed Orders',
+            value: 'complete',
+          },
+          {
+            text: 'InComplete Orders',
+            value: 'incomplete',
           }
         ],
         filterMultiple: false,
@@ -318,17 +381,24 @@ class Orders extends React.Component {
       //     }
       //   ],
       //   filterMultiple: false,
+      // onClick={() => this.handleclick(id)} icon="edit"
       //   onFilter: (value, record) => record.shipping.indexOf(value) === 0,
       // },
       {
-        title: 'Action',
-        key: 'action',
+        title: 'Actions',
+        key: 'actions',
         dataIndex: 'id',
-        render: (id) => (
+        render: (id, record) => (
           <p>
             <Button onClick={() => this.handleclick(id)} icon="edit" className="mr-1" size="small">
               View
             </Button>
+            {record.status === "complete" ?
+              <Button className="mr-1" size="small" icon="undo">
+                Initiate Refund
+              </Button> :
+              null
+            }
           </p>
         ),
       },
@@ -401,7 +471,7 @@ class Orders extends React.Component {
           <div className="card-body">
             <Collapse
               accordion
-              style={{ width: "40vw", textAlign: "center", marginLeft: "25%" }}
+              style={{ width: "50%", textAlign: "center", margin: "auto" }}
               expandIcon={({ isActive }) => <Icon type="caret-right" rotate={isActive ? 90 : 0} />}
             >
               <Panel header="Filter Panel" key="1" style={customPanelStyle}>
@@ -444,11 +514,11 @@ class Orders extends React.Component {
               dataSource={orders.orders.data}
               onChange={this.handleTableChange}
               expandIconAsCell={false}
-              expandIconColumnIndex={7}
+              expandIconColumnIndex={20}
               rowKey={record => record.id}
               expandedRowRender={(record) =>
                 // <div style={{ backgroundColor: "#ffffff" }}>
-                <Card>
+                <Card style={{ boxShadow: "inset 0 0 3px #000000" }}>
                   {orders.details.orders ?
                     <div>
                       <Row>
@@ -466,6 +536,7 @@ class Orders extends React.Component {
                     </div> : <Skeleton active />}
                   {/* <hr /> */}
                   <br />
+
                   {/* {orders.details.orders ? orders.details.orders.data.map((item) => {
                     if (item.trackingID === null) {
                       count += 1;
@@ -521,13 +592,93 @@ class Orders extends React.Component {
                     </Col> */}
                   {/* </Row> */}
                   {/* </Row> */}
-                  <Row>
+                  {/* <Sider > */}
+                  <Collapse
+                    accordion
+                    bordered={false}
+                    style={{ margin: "auto" }}
+                    expandIcon={({ isActive }) => <Icon type="caret-right" rotate={isActive ? 90 : 0} />}
+                  >
+                    <Panel header="Other Details" key="1" style={customPanelStyle}>
+                      <Row>
+                        <Col span={6}>
+                          <div>
+                            <Card title="Billing Address" className="card1">
+                              <p>{record.billing_address.first_name}&nbsp;{record.billing_address.last_name}</p>
+                              <p> {record.billing_address.line_1}</p>
+                              <p>{record.billing_address.line_2}</p>
+                              <p>  {record.billing_address.city}
+                                , {record.billing_address.county}
+                              </p>
+                              <p>  {record.billing_address.country}
+                                , {record.billing_address.postcode}
+                              </p>
+                            </Card>
+                          </div>
+                        </Col>
+                        <Col span={6}>
+                          <div style={{ marginLeft: "5%" }}>
+                            <Card title="Shipping Address" className="card1">
+                              <p>{record.shipping_address.first_name}&nbsp;{record.shipping_address.last_name} </p>
+                              <p> {record.shipping_address.line_1} </p>
+                              <p>   {record.shipping_address.line_2} </p>
+                              <p>  {record.shipping_address.city}
+                                , {record.shipping_address.county}
+                              </p>
+                              <p>  {record.shipping_address.country}
+                                , {record.shipping_address.postcode}
+                              </p>
+                            </Card>
+                          </div>
+                        </Col>
+                        <Col span={6}>
+                          <div style={{ marginLeft: "5%" }}>
+                            <Card title="Customer Details" className="card1" style={{ height: "264px" }}>
+                              <p>{record.customer.name} </p>
+                              <p> {record.customer.email} </p>
+                            </Card>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Panel>
+                  </Collapse>
+                  {/* <Tabs tabPosition="left" style={{ marginLeft: "6%" }}>
+                    <TabPane tab="Billing Address" key="1">
+                      <Card title="Billing Address" className="card1">
+                        <div className="carddiv">
+                          <p>{record.billing_address.first_name}&nbsp;{record.billing_address.last_name}</p>
+                          <p> {record.billing_address.line_1}</p>
+                          <p>{record.billing_address.line_2}</p>
+                          <p>  {record.billing_address.city}
+                            , {record.billing_address.county}
+                          </p>
+                          <p>  {record.billing_address.country}
+                            , {record.billing_address.postcode}
+                          </p>
+                        </div>
+                      </Card>
+                    </TabPane>
+                    <TabPane tab="Shipping Address" key="2">
+                      <Card title="Shipping Address" className="card1">
+                        <div className="carddiv">
+                          <p>{record.shipping_address.first_name}&nbsp;{record.shipping_address.last_name} </p>
+                          <p> {record.shipping_address.line_1} </p>
+                          <p>   {record.shipping_address.line_2} </p>
+                          <p>  {record.shipping_address.city}
+                            , {record.shipping_address.county}
+                          </p>
+                          <p>  {record.shipping_address.country}
+                            , {record.shipping_address.postcode}
+                          </p>
+                        </div>
+                      </Card>
+                    </TabPane>
+                  </Tabs> */}
+                  {/* <Row>
                     <Col span={8} style={{ marginLeft: "17%" }}>
                       <div>
                         <Card title="Billing Address">
-                          {/* <h5> Billing Details </h5> */}
                           <p>{record.billing_address.first_name}&nbsp;{record.billing_address.last_name}</p>
-                          {/* <p><strong></strong> </p> */}
                           <p> {record.billing_address.line_1}</p>
                           <p>{record.billing_address.line_2}</p>
                           <p>  {record.billing_address.city}
@@ -539,9 +690,6 @@ class Orders extends React.Component {
                         </Card>
                       </div>
                     </Col>
-                    {/* <Col span={8}>
-                      <p style={{ display: "none" }}> Hi  </p>
-                    </Col> */}
                     <Col span={8}>
                       <div style={{ marginLeft: "1%" }}>
                         <Card title="Shipping Address">
@@ -557,8 +705,8 @@ class Orders extends React.Component {
                         </Card>
                       </div>
                     </Col>
-                  </Row>
-                  {/* </div> */}
+                  </Row> */}
+                  {/* </Sider> */}
                 </Card>
               }
             />

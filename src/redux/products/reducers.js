@@ -1,9 +1,9 @@
 import types from './actions'
 
 const initialState = {
-    orders: [],
+    products: [],
     details: [],
-    detail: []
+    // detail: []
 }
 
 export default function blogReducer(state = initialState, action) {

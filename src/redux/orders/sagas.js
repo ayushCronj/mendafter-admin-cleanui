@@ -12,11 +12,13 @@ export function* getBlogListSaga() {
     try {
         const result = yield call(getBlogList)
         const { data } = result
+        console.log("HERE==>>>>", data)
         if (result.status === 200) {
             yield put({
                 type: 'orders/SET_STATE',
                 payload: {
                     orders: data.data.order,
+                    detail: data.data.orders
                 },
             })
         }
