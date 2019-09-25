@@ -1,6 +1,6 @@
 /* eslint no-underscore-dangle: 0 */
 import React from 'react'
-import { Table, Button, Row, Collapse, Icon, Col, Dropdown, Menu, Skeleton, Card, Input } from 'antd'
+import { Table, Button, Row, Collapse, Icon, Col, Dropdown, Menu, Skeleton, Card, Input, Form, Modal } from 'antd'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import './custom.scss'
@@ -17,7 +17,10 @@ class Orders extends React.Component {
     expandedKeys: [1],
     filterClick: false,
     refund: false,
-    details1: []
+    details1: [],
+    form1: false,
+    rowdetail: [],
+    visible: false
   }
 
   componentDidMount() {
@@ -44,15 +47,27 @@ class Orders extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { orders } = this.props;
-    // console.log("this,props", this.props)
-    // console.log("Next Props========>,", nextProps)
-    if (nextProps.orders.details !== orders.details) {
+    console.log("this,props", this.props)
+    console.log("Next Props========>,", nextProps)
+    if (nextProps.orders.detail !== orders.detail) {
+      console.log("HIIIIIIIIIIIIIIII")
       this.setState({
-        details1: nextProps.orders.details.orders.data
+        details1: nextProps.orders.detail
       })
     }
   }
 
+  closeModal = () => {
+    this.setState({
+      visible: false,
+    });
+  }
+
+  openModal = () => {
+    this.setState({
+      visible: true,
+    });
+  };
   // hideLoader = () => {
   //   this.setState({ loading: false });
   // }
@@ -138,11 +153,24 @@ class Orders extends React.Component {
     const { details1 } = this.state
     console.log(e.target.value)
     // console.log("FROM HERE=========> ,", id1)
-    // const details11 = Object.assign({}, details1)
-    const obj = details1.find(o => o.id === id1)
-    console.log(obj)
-    // obj.quantity = parseInt(e.target.value, 10)
+    // const ar = [];
+    // for (item in details1) {
+    //   ar.push(details1[item]);
+    // }
+    // for (const item in details1) {
+    //   // this condition is required to prevent moving forward to prototype chain
+    //   if (details1.hasOwnProperty(item)) {
+    //     ar.push(details1[item]);
+    //   }
+    // }
+    const arr = Object.values(details1)
+    // const obj = [...details1];
     // console.log(obj)
+    const somearr = [...arr]
+    const obj1 = somearr.find(o => o.id === id1)
+    console.log(obj1)
+    // obj1.quantity = parseInt(e.target.value, 10)
+    // console.log(obj1)
     // const objIndex = details1.findIndex((obj => obj.id === id1));
     // console.log("Before update: ", details1[objIndex])
     // details1[objIndex].quantity = parseInt(e.target.value, 10)
@@ -232,6 +260,51 @@ class Orders extends React.Component {
     })
   }
 
+  handleForm = (id) => {
+    const { orders } = this.props
+    const somear = [...orders.orders.data]
+    const obj1 = somear.find(o => o.id === id)
+    console.log(obj1)
+    // obj1.quantity = parseInt(e.target.value, 10)
+    // console.log(obj1)
+    console.log(somear)
+    this.setState({
+      form1: true,
+      visible: true,
+      rowid: id,
+      rowdetail: obj1
+    })
+  }
+
+  handleSubmit = (e) => {
+    const { dispatch } = this.props
+    const { rowid } = this.state
+    e.preventDefault();
+    let data
+    console.log("hi")
+    const { form } = this.props
+    form.validateFields((err, values) => {
+      if (!err) {
+        data = {
+          data: {
+            shippingAddress: values,
+            orderId: rowid
+          }
+        }
+        dispatch({
+          type: 'orders/updateShippingAddress',
+          payload: {
+            data
+          }
+        })
+        this.setState({
+          form1: false,
+          rowdetail: values
+        });
+      }
+    });
+  };
+
   render() {
     // let count = 0
     // let tp = 0
@@ -241,9 +314,12 @@ class Orders extends React.Component {
     let gt = 0
     let shi = 0
     // const { searchText, filterDropdownVisible, filtered } = this.state
-    const { orders } = this.props
-    const { expandedKeys, filterClick, refund, id, val, prodid, details1 } = this.state
+    const { orders, form } = this.props
+    const { getFieldDecorator } = form;
+    const { expandedKeys, filterClick, refund, id, val, prodid, details1, form1, rowid, rowdetail, visible } = this.state
     console.log(id)
+    console.log(rowid)
+    console.log("row==>", rowdetail)
     console.log(details1)
     console.log("This=========>", orders.details)
     const menu = (
@@ -260,6 +336,17 @@ class Orders extends React.Component {
         </SubMenu>
       </Menu>
     );
+
+    // const formItemLayout = {
+    //   labelCol: {
+    //     xs: { span: 24 },
+    //     sm: { span: 8 },
+    //   },
+    //   wrapperCol: {
+    //     xs: { span: 24 },
+    //     sm: { span: 16 },
+    //   },
+    // };
 
     const columns = [
       {
@@ -689,7 +776,7 @@ class Orders extends React.Component {
 
                           return null
                         })}
-                        <Card style={{ marginTop:"0.2%", width: "300px", position: "absolute", right: "0", overflow: "auto", backgroundColor: "rgb(235, 235, 245)" }}>
+                        <Card style={{ marginTop: "0.2%", width: "300px", position: "absolute", right: "0", overflow: "auto", backgroundColor: "rgb(235, 235, 245)" }}>
                           <table>
                             <tbody>
                               <tr>
@@ -698,15 +785,15 @@ class Orders extends React.Component {
                               </tr>
                               <tr>
                                 <td style={{ textAlign: "center" }}> Total Tax Amount - </td>
-                                <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid #e8e8e8" }}> ${parseFloat(tt / 100).toFixed(2)}</td>
+                                <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid #e8e8e8" }}> {ta !== 0 ? `$${parseFloat(tt / 100).toFixed(2)}` : `$0.00`}</td>
                               </tr>
                               <tr>
                                 <td style={{ textAlign: "center" }}> Shipping Charges - </td>
-                                <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid #e8e8e8" }}> {shi === 0 ? "Free" : `$${parseFloat(shi / 100).toFixed(2)}`}</td>
+                                <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid #e8e8e8" }}> {shi === 0 || ta === 0 ? "Free" : `$${parseFloat(shi / 100).toFixed(2)}`}</td>
                               </tr>
                               <tr>
                                 <td style={{ textAlign: "center" }}> Grand Total - </td>
-                                <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid #e8e8e8" }}> ${parseFloat(gt / 100).toFixed(2)} </td>
+                                <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid #e8e8e8" }}> {ta !== 0 ? `$${parseFloat(gt / 100).toFixed(2)}` : `$0.00`} </td>
                               </tr>
                             </tbody>
                           </table>
@@ -806,20 +893,120 @@ class Orders extends React.Component {
                           </div>
                         </Col>
                         <Col span={6}>
-                          <div style={{ marginLeft: "5%" }}>
-                            <Card title="Shipping Address" className="card1" extra={<a href="#"><Icon type="edit" /></a>}>
-                              <p>{record.shipping_address.first_name}&nbsp;{record.shipping_address.last_name} </p>
-                              <p> {record.shipping_address.line_1} </p>
-                              <p>   {record.shipping_address.line_2} </p>
-                              <p>  {record.shipping_address.city}
-                                , {record.shipping_address.county}
-                              </p>
-                              <p>  {record.shipping_address.country}
-                                , {record.shipping_address.postcode}
-                              </p>
-                            </Card>
-                          </div>
+                          {form1 ?
+                            <div style={{ marginLeft: "5%" }}>
+                              <Modal className="Modal" onOk={this.handleSubmit} onCancel={this.closeModal} visible={visible} title="Edit Shipping Address">
+                                <Card>
+                                  {/* <Form onSubmit={this.handleSubmit} {...formItemLayout}> */}
+                                  <Form layout="vertical">
+                                    <Form.Item label="First Name">
+                                      {getFieldDecorator('shipping_address.first_name', {
+                                        initialValue: rowdetail.shipping_address.first_name,
+                                        rules: [
+                                          {
+                                            required: true,
+                                            message: 'Please input your First-Name!!',
+                                          },
+                                        ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    <Form.Item label="Last Name">
+                                      {getFieldDecorator('shipping_address.last_name', {
+                                        initialValue: rowdetail.shipping_address.last_name,
+                                        rules: [
+                                          {
+                                            required: true,
+                                            message: 'Please input your Last-Name!!',
+                                          },
+                                        ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    <Form.Item label="Line 1">
+                                      {getFieldDecorator('shipping_address.line_1', {
+                                        initialValue: rowdetail.shipping_address.line_1,
+                                        rules: [
+                                          {
+                                            required: true,
+                                            message: 'Please input Line1 of address!!',
+                                          },
+                                        ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    <Form.Item label="Line2">
+                                      {getFieldDecorator('shipping_address.line_2', {
+                                        initialValue: rowdetail.shipping_address.line_2,
+                                        // rules: [
+                                        //   {
+                                        //     required: true,
+                                        //     message: 'Please input your First-Name!!',
+                                        //   },
+                                        // ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    <Form.Item label="City">
+                                      {getFieldDecorator('shipping_address.city', {
+                                        initialValue: rowdetail.shipping_address.city,
+                                        rules: [
+                                          {
+                                            required: true,
+                                            message: 'Please input your City!!',
+                                          },
+                                        ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    <Form.Item label="County">
+                                      {getFieldDecorator('shipping_address.county', {
+                                        initialValue: rowdetail.shipping_address.county,
+                                        // rules: [
+                                        //   {
+                                        //     required: true,
+                                        //     message: 'Please input your First-Name!!',
+                                        //   },
+                                        // ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    <Form.Item label="Country">
+                                      {getFieldDecorator('shipping_address.country', {
+                                        initialValue: rowdetail.shipping_address.country,
+                                        rules: [
+                                          {
+                                            required: true,
+                                            message: 'Please input your Country!!',
+                                          },
+                                        ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    <Form.Item label="Zip Code">
+                                      {getFieldDecorator('shipping_address.postcode', {
+                                        initialValue: rowdetail.shipping_address.postcode,
+                                        rules: [
+                                          {
+                                            required: true,
+                                            message: 'Please input Postal Code!!',
+                                          },
+                                        ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    {/* <Button type="primary" htmlType="submit" onClick={this.handleSubmit}> Update </Button> */}
+                                  </Form>
+                                </Card>
+                              </Modal>
+                            </div> :
+                            <div style={{ marginLeft: "5%" }}>
+                              <Card title="Shipping Address" className="card1" extra={<Icon type="edit" onClick={() => this.handleForm(record.id)} />}>
+                                <p>{rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.first_name : record.shipping_address.first_name}&nbsp;{rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.last_name : record.shipping_address.last_name} </p>
+                                <p> {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.line_1 : record.shipping_address.line_1} </p>
+                                <p>   {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.line_2 : record.shipping_address.line_2} </p>
+                                <p>  {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.city : record.shipping_address.city}
+                                  , {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.county : record.shipping_address.county}
+                                </p>
+                                <p>  {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.country : record.shipping_address.country}
+                                  , {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.postcode : record.shipping_address.postcode}
+                                </p>
+                              </Card>
+                            </div>}
                         </Col>
+
                         <Col span={6}>
                           <div style={{ marginLeft: "5%" }}>
                             <Card title="Customer Details" className="card1" style={{ height: "264px" }}>
@@ -906,4 +1093,4 @@ class Orders extends React.Component {
   }
 }
 
-export default Orders
+export default Form.create()(Orders);

@@ -44,3 +44,20 @@ export async function getFilterOrder(body) {
             return error
         })
 }
+
+export async function updateShippingAddress(body) {
+    const url = 'http://localhost:3002/api/orders/updateShippingAddress'
+    console.log("HI")
+    console.log(body.payload)
+    return axios
+        .post(url, body.payload.data)
+        .then(response => {
+            if (response) {
+                return response
+            }
+            return false
+        })
+        .catch(error => {
+            return error
+        })
+}

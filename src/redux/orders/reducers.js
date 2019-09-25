@@ -12,12 +12,30 @@ export default function blogReducer(state = initialState, action) {
             // console.log(action.payload)
             return { ...state, ...action.payload }
         case types.SET_DETAIL:
+            console.log(action.payload)
             return {
                 ...state,
-                details: { ...state.details, ...action.payload }
+                details: { ...state.details, ...action.payload },
+                // detail: [action.payload,...state.tasks]
+                detail: { ...state.detail, ...action.payload.orders.data }
                 // details: action.payload,
             }
+        case types.UPDATE_DETAIL: {
+            // console.log(state)
+            console.log(action.payload)
+            const somear = [...state.orders.data]
+            const obj1 = somear.find(o => o.id === action.payload.orders.order.data.id)
+            console.log(obj1)
+            obj1.shipping_address = action.payload.orders.order.data.shipping_address
+            console.log(obj1)
+            // console.log("HHHHHHHHHHHHHH")
+            // console.log(somear)
+            // obj1.quantity = parseInt(e.target.value, 10)
+            // console.log(obj1)
+            return state
+        }
         default:
             return state
+
     }
 }

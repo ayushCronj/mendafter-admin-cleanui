@@ -3,7 +3,8 @@ import { all, takeEvery, put, call } from 'redux-saga/effects'
 import {
     getBlogList,
     viewDetail,
-    getFilterOrder
+    getFilterOrder,
+    updateShippingAddress
 } from 'services/orders'
 import actions from './actions'
 
@@ -89,10 +90,38 @@ export function* getFilterOrderSaga(payload) {
     }
 }
 
+export function* updateShippingAddressSaga(payload) {
+    try {
+        const result = yield call(updateShippingAddress, payload)
+        const { data } = result
+        console.log(data)
+        if (result.status === 200) {
+            yield put({
+                type: 'orders/UPDATE_LIST',
+                payload: {
+                    orders: data.data,
+                },
+            })
+        }
+        else {
+            notification.warning({
+                message: 'Error',
+                description: 'Some Error Occured',
+            })
+        }
+    } catch (err) {
+        notification.warning({
+            message: 'Error',
+            description: 'Some Error Occured',
+        })
+    }
+}
+
 export default function* rootSaga() {
     yield all([
         takeEvery(actions.GET_LIST, getBlogListSaga),
         takeEvery(actions.VIEW_DETAIL, viewOrderDetail),
-        takeEvery(actions.GET_FILTER_LIST, getFilterOrderSaga)
+        takeEvery(actions.GET_FILTER_LIST, getFilterOrderSaga),
+        takeEvery(actions.UPDATE_SHIPPING_ADDRESS, updateShippingAddressSaga)
     ])
 }
