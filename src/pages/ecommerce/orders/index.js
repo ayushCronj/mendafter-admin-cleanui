@@ -1,6 +1,6 @@
 /* eslint no-underscore-dangle: 0 */
 import React from 'react'
-import { Table, Button, Row, Collapse, Icon, Col, Dropdown, Menu, Skeleton, Card } from 'antd'
+import { Table, Button, Row, Collapse, Icon, Col, Dropdown, Menu, Skeleton, Card, Input } from 'antd'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import './custom.scss'
@@ -15,7 +15,9 @@ class Orders extends React.Component {
   state = {
     // loading: false,
     expandedKeys: [1],
-    filterClick: false
+    filterClick: false,
+    refund: false,
+    details1: []
   }
 
   componentDidMount() {
@@ -38,7 +40,17 @@ class Orders extends React.Component {
     dispatch({
       type: 'orders/GET_LIST'
     })
+  }
 
+  componentWillReceiveProps(nextProps) {
+    const { orders } = this.props;
+    // console.log("this,props", this.props)
+    // console.log("Next Props========>,", nextProps)
+    if (nextProps.orders.details !== orders.details) {
+      this.setState({
+        details1: nextProps.orders.details.orders.data
+      })
+    }
   }
 
   // hideLoader = () => {
@@ -59,11 +71,22 @@ class Orders extends React.Component {
     })
   }
 
+  handlerowclick = () => {
+    // const { expandedKeys } = this.state;
+    // if (expandedKeys[0] !== 1) {
+    //   this.setState({
+    //     expandedKeys: [1]
+    //   })
+    // }
+    console.log("i am clicked")
+  }
+
   handleclick = (id) => {
     const { expandedKeys } = this.state
     if (expandedKeys[0] === id) {
       this.setState({
-        expandedKeys: [1]
+        expandedKeys: [1],
+        refund: false
       })
     }
     else {
@@ -86,7 +109,8 @@ class Orders extends React.Component {
         }
       })
       this.setState({
-        expandedKeys: [id]
+        expandedKeys: [id],
+        refund: false
       })
     }
   }
@@ -107,6 +131,30 @@ class Orders extends React.Component {
     })
     this.setState({
       filterClick: true
+    })
+  }
+
+  handleinput = (e, id1) => {
+    const { details1 } = this.state
+    console.log(e.target.value)
+    // console.log("FROM HERE=========> ,", id1)
+    // const details11 = Object.assign({}, details1)
+    const obj = details1.find(o => o.id === id1)
+    console.log(obj)
+    // obj.quantity = parseInt(e.target.value, 10)
+    // console.log(obj)
+    // const objIndex = details1.findIndex((obj => obj.id === id1));
+    // console.log("Before update: ", details1[objIndex])
+    // details1[objIndex].quantity = parseInt(e.target.value, 10)
+    // console.log("After update: ", details1[objIndex])
+    // let {details11} = details1
+    // variants[i] = variant .quantity = parseInt(e.target.value, 10)
+    const { orders } = this.props
+    console.log("jhgjhghjghj========> ", orders.details)
+    this.setState({
+      val: e.target.value,
+      prodid: id1,
+      details1
     })
   }
 
@@ -176,12 +224,28 @@ class Orders extends React.Component {
     })
   }
 
+  handleRefund = (id) => {
+    this.setState({
+      id,
+      // expandedKeys: [id],
+      refund: true
+    })
+  }
+
   render() {
     // let count = 0
+    // let tp = 0
+    // let tq = 0
+    let tt = 0
+    let ta = 0
+    let gt = 0
+    let shi = 0
     // const { searchText, filterDropdownVisible, filtered } = this.state
     const { orders } = this.props
-    const { expandedKeys, filterClick } = this.state
-
+    const { expandedKeys, filterClick, refund, id, val, prodid, details1 } = this.state
+    console.log(id)
+    console.log(details1)
+    console.log("This=========>", orders.details)
     const menu = (
       <Menu>
         <Menu.Item onClick={this.handleChange} key="week">This week</Menu.Item>
@@ -270,7 +334,7 @@ class Orders extends React.Component {
         title: 'Payment Status',
         dataIndex: 'payment',
         key: 'status',
-        render: (text, record) => (
+        render: (text) => (
           <p
             className={
               text === 'paid'
@@ -278,7 +342,6 @@ class Orders extends React.Component {
                 : 'font-size-12 badge badge-default'
             }
           >
-            {console.log(record)}
             {text}
           </p>
         ),
@@ -388,13 +451,13 @@ class Orders extends React.Component {
         title: 'Actions',
         key: 'actions',
         dataIndex: 'id',
-        render: (id, record) => (
+        render: (id1, record) => (
           <p>
-            <Button onClick={() => this.handleclick(id)} icon="edit" className="mr-1" size="small">
+            <Button onClick={() => this.handleclick(id1)} icon="edit" className="mr-1" size="small">
               View
             </Button>
             {record.status === "complete" ?
-              <Button className="mr-1" size="small" icon="undo">
+              <Button className="mr-1" size="small" icon="undo" onClick={() => this.handleRefund(id1)}>
                 Initiate Refund
               </Button> :
               null
@@ -411,7 +474,17 @@ class Orders extends React.Component {
         key: 'name',
         render: text => (
           <p>
-            {text ? `${text}` : ''}
+            {text ? `${text}` : 'NA'}
+          </p>
+        ),
+      },
+      {
+        title: 'SKU',
+        dataIndex: 'sku',
+        key: 'sku',
+        render: text => (
+          <p>
+            {text ? `${text}` : 'NA'}
           </p>
         ),
       },
@@ -419,6 +492,16 @@ class Orders extends React.Component {
         title: 'Tracking ID',
         dataIndex: 'trackingID',
         key: 'trackid',
+        render: text => (
+          <p>
+            {text ? `${text}` : 'NA'}
+          </p>
+        ),
+      },
+      {
+        title: 'Vendor ID',
+        dataIndex: 'vendorOrderId',
+        key: 'vendorid',
         render: text => (
           <p>
             {text ? `${text}` : 'NA'}
@@ -436,18 +519,63 @@ class Orders extends React.Component {
         ),
       },
       {
-        title: 'Product Price',
-        dataIndex: 'meta.display_price.with_tax.unit.formatted',
-        key: 'total',
+        title: 'Per Unit Price',
+        dataIndex: 'meta.display_price.without_tax.unit.formatted',
+        key: 'without',
         render: text => <p>{`${text}`} </p>,
-        sorter: (a, b) => parseInt(a.meta.display_price.with_tax.unit.amount, 10) - parseInt(b.meta.display_price.with_tax.unit.amount, 10),
+        sorter: (a, b) => parseInt(a.meta.display_price.without_tax.unit.amount, 10) - parseInt(b.meta.display_price.without_tax.unit.amount, 10),
       },
       {
         title: 'Product Quantity',
         dataIndex: 'quantity',
         key: 'quantity',
-        render: text => <p> {`${text}`}</p>,
+        render: (text, record) => (
+          <p>
+            {/* {`${text}`} {val} */}
+            {console.log("This is the row======>", text, val, record)}
+            {/* {prodid ? console.log("This is printed", details.orders.data.find(o => o.id === prodid).quantity) : null} */}
+            {record.id === prodid && parseInt(val, 10) !== parseInt(text, 10) ? <span> <strike style={{ color: "red" }}> {text} </strike> {val} </span> : `${text}`}
+            {refund && record.name !== "Shipping Charges" ? <Input style={{ width: "80px" }} type="number" min="0" max={parseInt(text, 10)} onChange={(e) => this.handleinput(e, record.id)} /> : null}
+          </p>
+        ),
         sorter: (a, b) => parseInt(a.quantity, 10) - parseInt(b.quantity, 10),
+      },
+      {
+        title: 'Product Price',
+        dataIndex: 'meta.display_price.without_tax.value.formatted',
+        key: 'without',
+        render: (text, record) => (
+          <p>
+            {/* {`${text}`} {console.log(prodid)}{console.log(record)} */}
+            {record.id === prodid && parseInt(val, 10) !== parseInt(record.quantity, 10) ? <p> <strike style={{ color: "red" }}>{text} </strike> ${parseFloat((val * record.meta.display_price.without_tax.unit.amount) / 100).toFixed(2)} </p> : `${text}`}
+          </p>
+        ),
+        sorter: (a, b) => parseInt(a.meta.display_price.without_tax.value.amount, 10) - parseInt(b.meta.display_price.without_tax.value.amount, 10),
+      },
+      {
+        title: 'Tax',
+        dataIndex: 'meta.display_price.tax.value.formatted',
+        key: 'tax',
+        // render: text => <p>{`${text}`} </p>,
+        render: (text, record) => (
+          <p>
+            {/* {`${text}`} {console.log(prodid)}{console.log(record)} */}
+            {record.id === prodid && parseInt(val, 10) !== parseInt(record.quantity, 10) && record.meta.display_price.tax.value.amount > 0 ? <p> <strike style={{ color: "red" }}>{text} </strike> ${parseFloat((val * record.meta.display_price.tax.unit.amount) / 100).toFixed(2)} </p> : `${text}`}
+          </p>
+        ),
+        sorter: (a, b) => parseInt(a.meta.display_price.tax.value.amount, 10) - parseInt(b.meta.display_price.tax.value.amount, 10),
+      },
+      {
+        title: 'Product Total',
+        dataIndex: 'meta.display_price.with_tax.value.formatted',
+        key: 'with',
+        render: (text, record) => (
+          <p>
+            {/* {`${text}`} {console.log(prodid)}{console.log(record)} */}
+            {record.id === prodid && parseInt(val, 10) !== parseInt(record.quantity, 10) ? <p> <strike style={{ color: "red" }}>{text} </strike> ${parseFloat((val * record.meta.display_price.with_tax.unit.amount) / 100).toFixed(2)} </p> : `${text}`}
+          </p>
+        ),
+        sorter: (a, b) => parseInt(a.meta.display_price.with_tax.value.amount, 10) - parseInt(b.meta.display_price.with_tax.value.amount, 10),
       }
     ]
 
@@ -479,9 +607,9 @@ class Orders extends React.Component {
                   <h5> Choose a Filter </h5>
                   <br />
                   <Dropdown overlay={menu}>
-                    <a href="#">
+                    <span>
                       Filter Dropdown &nbsp; <Icon type="down" />
-                    </a>
+                    </span>
                   </Dropdown>
                 </div>
                 <br />
@@ -516,6 +644,11 @@ class Orders extends React.Component {
               expandIconAsCell={false}
               expandIconColumnIndex={20}
               rowKey={record => record.id}
+              onRow={(record) => {
+                return {
+                  onClick: () => this.handlerowclick(record)
+                };
+              }}
               expandedRowRender={(record) =>
                 // <div style={{ backgroundColor: "#ffffff" }}>
                 <Card style={{ boxShadow: "inset 0 0 3px #000000" }}>
@@ -529,9 +662,65 @@ class Orders extends React.Component {
                           scroll={{ x: '100%' }}
                           columns={columns1}
                           dataSource={orders.details.orders.data}
-                          rowKey={record1 => record1.id}
+                          rowKey={record1 => record1.product_id}
                           pagination={{ hideOnSinglePage: true }}
                         />
+                      </Row>
+
+                      <Row style={{ height: "150px" }}>
+                        {orders.details.orders.data.map((item) => {
+                          if (item.id === prodid) {
+                            ta += (val * item.meta.display_price.without_tax.unit.amount)
+                            // tq += item.quantity
+                            tt += (val * item.meta.display_price.tax.unit.amount)
+                            gt += (val * item.meta.display_price.with_tax.unit.amount)
+                          } else {
+                            ta += item.meta.display_price.without_tax.value.amount
+                            // tq += item.quantity
+                            tt += item.meta.display_price.tax.value.amount
+                            gt += item.meta.display_price.with_tax.value.amount
+                          }
+                          if (item.name === "Shipping Charges") {
+                            shi += item.meta.display_price.without_tax.value.amount;
+                            ta -= item.meta.display_price.without_tax.value.amount
+                            // tq -= item.quantity
+                            // tt -= item.meta.display_price.tax.value.amount
+                          }
+
+                          return null
+                        })}
+                        <Card style={{ marginTop:"0.2%", width: "300px", position: "absolute", right: "0", overflow: "auto", backgroundColor: "rgb(235, 235, 245)" }}>
+                          <table>
+                            <tbody>
+                              <tr>
+                                <td style={{ textAlign: "center" }}> Total Amount - </td>
+                                <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid #e8e8e8" }}> ${parseFloat(ta / 100).toFixed(2)} </td>
+                              </tr>
+                              <tr>
+                                <td style={{ textAlign: "center" }}> Total Tax Amount - </td>
+                                <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid #e8e8e8" }}> ${parseFloat(tt / 100).toFixed(2)}</td>
+                              </tr>
+                              <tr>
+                                <td style={{ textAlign: "center" }}> Shipping Charges - </td>
+                                <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid #e8e8e8" }}> {shi === 0 ? "Free" : `$${parseFloat(shi / 100).toFixed(2)}`}</td>
+                              </tr>
+                              <tr>
+                                <td style={{ textAlign: "center" }}> Grand Total - </td>
+                                <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid #e8e8e8" }}> ${parseFloat(gt / 100).toFixed(2)} </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          {/* <div>
+                            
+                            <p> Total Amount - ${parseFloat(ta / 100).toFixed(2)} </p>
+                            <p>Total Tax Amount - ${tt / 100} </p>
+                            {shi === 0 ?
+                              <p style={{ textAlign: "left !important" }}> Shipping Charges - Free </p>
+                              :
+                              <p style={{ textAlign: "left !important" }}> Shipping Charges - ${parseFloat(shi / 100).toFixed(2)} </p>}
+                            <p> Grand Total - ${parseFloat(gt / 100).toFixed(2)} </p>
+                          </div> */}
+                        </Card>
                       </Row>
                     </div> : <Skeleton active />}
                   {/* <hr /> */}
@@ -618,7 +807,7 @@ class Orders extends React.Component {
                         </Col>
                         <Col span={6}>
                           <div style={{ marginLeft: "5%" }}>
-                            <Card title="Shipping Address" className="card1">
+                            <Card title="Shipping Address" className="card1" extra={<a href="#"><Icon type="edit" /></a>}>
                               <p>{record.shipping_address.first_name}&nbsp;{record.shipping_address.last_name} </p>
                               <p> {record.shipping_address.line_1} </p>
                               <p>   {record.shipping_address.line_2} </p>
