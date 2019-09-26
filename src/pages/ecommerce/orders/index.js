@@ -1,4 +1,6 @@
 /* eslint no-underscore-dangle: 0 */
+/* eslint-disable no-return-assign */
+/* eslint-disable no-unused-expressions */
 import React from 'react'
 import { Table, Button, Row, Collapse, Icon, Col, Dropdown, Menu, Skeleton, Card, Input, Form, Modal } from 'antd'
 import { Helmet } from 'react-helmet'
@@ -7,7 +9,6 @@ import './custom.scss'
 
 const { Panel } = Collapse;
 const { SubMenu } = Menu;
-// const { TabPane } = Tabs;
 // const Loader = () => <h4 style={{ textAlign: "center" }}>Products Data is being prepared</h4>;
 
 @connect(({ orders }) => ({ orders }))
@@ -60,6 +61,7 @@ class Orders extends React.Component {
   closeModal = () => {
     this.setState({
       visible: false,
+      form1: false
     });
   }
 
@@ -93,6 +95,8 @@ class Orders extends React.Component {
     //     expandedKeys: [1]
     //   })
     // }
+    const { refund } = this.state
+    console.log(refund)
     console.log("i am clicked")
   }
 
@@ -151,7 +155,7 @@ class Orders extends React.Component {
 
   handleinput = (e, id1) => {
     const { details1 } = this.state
-    console.log(e.target.value)
+    console.log("details value==>>", details1)
     // console.log("FROM HERE=========> ,", id1)
     // const ar = [];
     // for (item in details1) {
@@ -167,8 +171,23 @@ class Orders extends React.Component {
     // const obj = [...details1];
     // console.log(obj)
     const somearr = [...arr]
-    const obj1 = somearr.find(o => o.id === id1)
-    console.log(obj1)
+    // const obj1 = somearr.find(o => o.id === id1)
+    // console.log(obj1)
+    const newData = somearr.map(obj => {
+      if (obj.id === id1) // check if fieldName equals to cityId
+        return {
+          ...obj,
+          quantity: parseInt(e.target.value, 10),
+        }
+      return obj
+    });
+    console.log(newData)
+    const newobj = {}
+    newData.map((item, index) => {
+      newobj[index] = item
+      return null
+    })
+    console.log(newobj)
     // obj1.quantity = parseInt(e.target.value, 10)
     // console.log(obj1)
     // const objIndex = details1.findIndex((obj => obj.id === id1));
@@ -182,7 +201,7 @@ class Orders extends React.Component {
     this.setState({
       val: e.target.value,
       prodid: id1,
-      details1
+      details1: newobj
     })
   }
 
@@ -554,6 +573,13 @@ class Orders extends React.Component {
       },
     ]
 
+    let arr = []
+    let somearr = []
+    let obj1 = {}
+    // let arr1 = []
+    // let somearr1 = []
+    // let obj2 = {}
+
     const columns1 = [
       {
         title: 'Product Name',
@@ -616,27 +642,35 @@ class Orders extends React.Component {
         title: 'Product Quantity',
         dataIndex: 'quantity',
         key: 'quantity',
-        render: (text, record) => (
-          <p>
-            {/* {`${text}`} {val} */}
-            {console.log("This is the row======>", text, val, record)}
-            {/* {prodid ? console.log("This is printed", details.orders.data.find(o => o.id === prodid).quantity) : null} */}
-            {record.id === prodid && parseInt(val, 10) !== parseInt(text, 10) ? <span> <strike style={{ color: "red" }}> {text} </strike> {val} </span> : `${text}`}
-            {refund && record.name !== "Shipping Charges" ? <Input style={{ width: "80px" }} type="number" min="0" max={parseInt(text, 10)} onChange={(e) => this.handleinput(e, record.id)} /> : null}
-          </p>
-        ),
+        render: (text, record) => {
+          arr = Object.values(details1)
+          somearr = [...arr]
+          obj1 = somearr.find(o => (o.id === record.id))
+          /* record.id === prodid && {prodid ? console.log("This is printed", details.orders.data.find(o => o.id === prodid).quantity) : null} */
+          /* {parseInt(text, 10) !== parseInt(obj1.quantity, 10) ? <span> <strike style={{ color: "red" }}> {text} </strike> {val} </span> : `${text}`} */
+          // { refund && record.name !== "Shipping Charges" ? <Input style={{ width: "80px" }} type="number" min="0" max={parseInt(text, 10)} onChange={(e) => this.handleinput(e, record.id)} /> : null }
+          return (
+            <p>
+              {/* {text} */}
+              {parseInt(text, 10) !== parseInt(obj1.quantity, 10) ? <span> <strike style={{ color: "red" }}> {text} </strike> {obj1.quantity} </span> : `${text}`}
+              {refund && record.name !== "Shipping Charges" ? <Input style={{ width: "60px" }} type="number" min="0" max={parseInt(text, 10)} onChange={(e) => this.handleinput(e, record.id)} /> : null}
+            </p>
+          )
+        },
         sorter: (a, b) => parseInt(a.quantity, 10) - parseInt(b.quantity, 10),
       },
       {
         title: 'Product Price',
         dataIndex: 'meta.display_price.without_tax.value.formatted',
         key: 'without',
-        render: (text, record) => (
-          <p>
-            {/* {`${text}`} {console.log(prodid)}{console.log(record)} */}
-            {record.id === prodid && parseInt(val, 10) !== parseInt(record.quantity, 10) ? <p> <strike style={{ color: "red" }}>{text} </strike> ${parseFloat((val * record.meta.display_price.without_tax.unit.amount) / 100).toFixed(2)} </p> : `${text}`}
-          </p>
-        ),
+        render: (text, record) => {
+          return (
+            <p>
+              {/* {`${text}`} {console.log(prodid)}{console.log(record)} */}
+              {parseInt(obj1.quantity, 10) !== parseInt(record.quantity, 10) ? <p> <strike style={{ color: "red" }}>{text} </strike> ${parseFloat((obj1.quantity * record.meta.display_price.without_tax.unit.amount) / 100).toFixed(2)} </p> : `${text}`}
+            </p>
+          )
+        },
         sorter: (a, b) => parseInt(a.meta.display_price.without_tax.value.amount, 10) - parseInt(b.meta.display_price.without_tax.value.amount, 10),
       },
       {
@@ -644,24 +678,28 @@ class Orders extends React.Component {
         dataIndex: 'meta.display_price.tax.value.formatted',
         key: 'tax',
         // render: text => <p>{`${text}`} </p>,
-        render: (text, record) => (
-          <p>
-            {/* {`${text}`} {console.log(prodid)}{console.log(record)} */}
-            {record.id === prodid && parseInt(val, 10) !== parseInt(record.quantity, 10) && record.meta.display_price.tax.value.amount > 0 ? <p> <strike style={{ color: "red" }}>{text} </strike> ${parseFloat((val * record.meta.display_price.tax.unit.amount) / 100).toFixed(2)} </p> : `${text}`}
-          </p>
-        ),
+        render: (text, record) => {
+          return (
+            <p>
+              {/* {`${text}`} {console.log(prodid)}{console.log(record)} */}
+              {parseInt(obj1.quantity, 10) !== parseInt(record.quantity, 10) && record.meta.display_price.tax.value.amount > 0 ? <p> <strike style={{ color: "red" }}>{text} </strike> ${parseFloat((obj1.quantity * record.meta.display_price.tax.unit.amount) / 100).toFixed(2)} </p> : `${text}`}
+            </p>
+          )
+        },
         sorter: (a, b) => parseInt(a.meta.display_price.tax.value.amount, 10) - parseInt(b.meta.display_price.tax.value.amount, 10),
       },
       {
         title: 'Product Total',
         dataIndex: 'meta.display_price.with_tax.value.formatted',
         key: 'with',
-        render: (text, record) => (
-          <p>
-            {/* {`${text}`} {console.log(prodid)}{console.log(record)} */}
-            {record.id === prodid && parseInt(val, 10) !== parseInt(record.quantity, 10) ? <p> <strike style={{ color: "red" }}>{text} </strike> ${parseFloat((val * record.meta.display_price.with_tax.unit.amount) / 100).toFixed(2)} </p> : `${text}`}
-          </p>
-        ),
+        render: (text, record) => {
+          return (
+            <p>
+              {/* {`${text}`} {console.log(prodid)}{console.log(record)} */}
+              {parseInt(obj1.quantity, 10) !== parseInt(record.quantity, 10) ? <p> <strike style={{ color: "red" }}>{text} </strike> ${parseFloat((obj1.quantity * record.meta.display_price.with_tax.unit.amount) / 100).toFixed(2)} </p> : `${text}`}
+            </p>
+          )
+        },
         sorter: (a, b) => parseInt(a.meta.display_price.with_tax.value.amount, 10) - parseInt(b.meta.display_price.with_tax.value.amount, 10),
       }
     ]
@@ -755,18 +793,35 @@ class Orders extends React.Component {
                       </Row>
 
                       <Row style={{ height: "150px" }}>
-                        {orders.details.orders.data.map((item) => {
-                          if (item.id === prodid) {
-                            ta += (val * item.meta.display_price.without_tax.unit.amount)
+                        {console.log(val, prodid)}
+                        {/* {arr1 = Object.values(details1)} */}
+                        {/* {somearr1 = [...arr1]} */}
+                        {/* {orders.details.orders.data.map((item) => {
+                          // obj2 = somearr1.find(o => (o.id === item.id))
+                          // console.log(obj2)
+                          Object.keys(details1).forEach(key => {
+                            console.log(details1[key]);
+                            ta += (details1[key].quantity * details1[key].meta.display_price.without_tax.unit.amount)
                             // tq += item.quantity
-                            tt += (val * item.meta.display_price.tax.unit.amount)
-                            gt += (val * item.meta.display_price.with_tax.unit.amount)
-                          } else {
-                            ta += item.meta.display_price.without_tax.value.amount
-                            // tq += item.quantity
-                            tt += item.meta.display_price.tax.value.amount
-                            gt += item.meta.display_price.with_tax.value.amount
-                          }
+                            tt += (details1[key].quantity * details1[key].meta.display_price.tax.unit.amount)
+                            gt += (details1[key].quantity * details1[key].meta.display_price.with_tax.unit.amount)
+                          });
+                          console.log("qqqqqqqqqqq===>", somearr, arr)
+                          // if (item.id === prodid) {
+                          //   ta += (val * item.meta.display_price.without_tax.unit.amount)
+                          //   // tq += item.quantity
+                          //   tt += (val * item.meta.display_price.tax.unit.amount)
+                          //   gt += (val * item.meta.display_price.with_tax.unit.amount)
+                          // } else {
+                          //   ta += item.meta.display_price.without_tax.value.amount
+                          //   // tq += item.quantity
+                          //   tt += item.meta.display_price.tax.value.amount
+                          //   gt += item.meta.display_price.with_tax.value.amount
+                          // }
+                          // ta += (item.quantity * item.meta.display_price.without_tax.unit.amount)
+                          // tq += item.quantity
+                          // tt += (item.quantity * item.meta.display_price.tax.unit.amount)
+                          // gt += (item.quantity * item.meta.display_price.with_tax.unit.amount)
                           if (item.name === "Shipping Charges") {
                             shi += item.meta.display_price.without_tax.value.amount;
                             ta -= item.meta.display_price.without_tax.value.amount
@@ -774,13 +829,55 @@ class Orders extends React.Component {
                             // tt -= item.meta.display_price.tax.value.amount
                           }
 
+
                           return null
+                        })} */}
+
+                        {Object.keys(details1).forEach(key => {
+                          console.log(details1[key]);
+                          ta += (details1[key].quantity * details1[key].meta.display_price.without_tax.unit.amount)
+                          // tq += item.quantity
+                          tt += (details1[key].quantity * details1[key].meta.display_price.tax.unit.amount)
+                          gt += (details1[key].quantity * details1[key].meta.display_price.with_tax.unit.amount)
+                          if (details1[key].name === "Shipping Charges") {
+                            shi += details1[key].meta.display_price.without_tax.value.amount;
+                            ta -= details1[key].meta.display_price.without_tax.value.amount
+                            // tq -= item.quantity
+                            // tt -= item.meta.display_price.tax.value.amount
+                          }
                         })}
+                        {/* {arr1 = Object.values(details1)}
+                        {somearr1 = [...arr1]}
+                        {console.log("somearr", somearr1)}
+                        {somearr1.map((item) => {
+                          console.log("These are the items", item)
+                          ta += (item.quantity * item.meta.display_price.without_tax.unit.amount)
+                          // tq += item.quantity
+                          tt += (item.quantity * item.meta.display_price.tax.unit.amount)
+                          gt += (item.quantity * item.meta.display_price.with_tax.unit.amount)
+                          console.log("gg", ta, tt, gt, shi)
+                          // else {
+                          //   ta += item.meta.display_price.without_tax.value.amount
+                          //   // tq += item.quantity
+                          //   tt += item.meta.display_price.tax.value.amount
+                          //   gt += item.meta.display_price.with_tax.value.amount
+                          // }
+
+                          if (item.name === "Shipping Charges") {
+                            shi += item.meta.display_price.without_tax.value.amount;
+                            ta -= item.meta.display_price.without_tax.value.amount
+                            // tq -= item.quantity
+                            // tt -= item.meta.display_price.tax.value.amount
+                          }
+
+
+                          return null
+                        })} */}
                         <Card style={{ marginTop: "0.2%", width: "300px", position: "absolute", right: "0", overflow: "auto", backgroundColor: "rgb(235, 235, 245)" }}>
                           <table>
                             <tbody>
                               <tr>
-                                <td style={{ textAlign: "center" }}> Total Amount - </td>
+                                <td style={{ textAlign: "center" }}> Total Amount - {console.log(ta)}</td>
                                 <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid #e8e8e8" }}> ${parseFloat(ta / 100).toFixed(2)} </td>
                               </tr>
                               <tr>

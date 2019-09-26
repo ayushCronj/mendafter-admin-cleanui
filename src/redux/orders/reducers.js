@@ -17,7 +17,7 @@ export default function blogReducer(state = initialState, action) {
                 ...state,
                 details: { ...state.details, ...action.payload },
                 // detail: [action.payload,...state.tasks]
-                detail: { ...state.detail, ...action.payload.orders.data }
+                detail: { ...action.payload.orders.data }
                 // details: action.payload,
             }
         case types.UPDATE_DETAIL: {
