@@ -6,6 +6,7 @@ export async function getBlogList() {
         .get(url)
         .then(response => {
             if (response) {
+                // console.log(response.data.product)
                 return response
             }
             return false
@@ -16,11 +17,24 @@ export async function getBlogList() {
 }
 
 export async function viewDetail(body) {
-    const url = `http://localhost:3002/api/orders/getOrderItems/${body.payload.id}`
+    const url = `http://localhost:3002/api/admin/getOrderItems/${body.payload.id}`
     return axios
         .get(url)
         .then(response => {
             if (response) {
+                const promiseAr = []
+                response.data.product.map((item) => {
+                    if (!Array.isArray(item)) {
+                        promiseAr.push(getName(item.vendorId))
+                        // console.log(some)
+                    }
+                    return null
+                })
+                Promise.all(promiseAr).then(odata => {
+                    console.log(odata)
+                    // response.data.odata = odata
+                    return response
+                })
                 return response
             }
             return false
@@ -47,12 +61,31 @@ export async function getFilterOrder(body) {
 
 export async function updateShippingAddress(body) {
     const url = 'http://localhost:3002/api/orders/updateShippingAddress'
-    console.log("HI")
+
     console.log(body.payload)
     return axios
         .post(url, body.payload.data)
         .then(response => {
             if (response) {
+                return response
+            }
+            return false
+        })
+        .catch(error => {
+            return error
+        })
+}
+
+export async function getName(body) {
+    console.log(body)
+    const url = `http://localhost:3002/api/vendor/getVendorById/${body}`
+    console.log(url)
+    return axios
+        .get(url)
+        .then(response => {
+            if (response) {
+                // console.log(response)
+                // console.log("gename===>", response.data.data.vendorName)
                 return response
             }
             return false
