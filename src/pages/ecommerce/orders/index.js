@@ -15,6 +15,8 @@ const { SubMenu } = Menu;
 class Orders extends React.Component {
   amountinput = React.createRef();
 
+  nameinput = React.createRef();
+
   state = {
     // loading: false,
     expandedKeys: [1],
@@ -24,7 +26,9 @@ class Orders extends React.Component {
     form1: false,
     rowdetail: [],
     visible: false,
-    custom: false
+    custom: false,
+    filterbutton: false,
+    searchbutton: false
   }
 
   componentDidMount() {
@@ -87,20 +91,24 @@ class Orders extends React.Component {
       type: 'orders/GET_LIST'
     })
     this.setState({
-      filterClick: false
+      filterClick: false,
+      searchbutton: false,
+      filterbutton: false
     })
   }
 
-  handlerowclick = () => {
-    // const { expandedKeys } = this.state;
-    // if (expandedKeys[0] !== 1) {
-    //   this.setState({
-    //     expandedKeys: [1]
-    //   })
-    // }
-    const { refund } = this.state
-    console.log(refund)
-    console.log("i am clicked")
+  handlerowclick = (e) => {
+    // console.log("hi",e._dispatchInstances)
+    const { expandedKeys } = this.state;
+    if (expandedKeys[0] !== 1 && e._dispatchInstances.length === 2) {
+      this.setState({
+        expandedKeys: [1]
+      })
+    }
+    // const { refund } = this.state
+    // console.log(refund)
+    // console.log("i am clicked")
+
   }
 
   handleclick = (id) => {
@@ -139,11 +147,12 @@ class Orders extends React.Component {
   }
 
   namefilterclicked = () => {
+    console.log(this.nameinput.current.state.value)
     const { dispatch } = this.props
     const values = {
       data: {
         property: "customer",
-        name: `${this.name.value}`
+        name: `${this.nameinput.current.state.value}`
       }
     }
     dispatch({
@@ -318,7 +327,7 @@ class Orders extends React.Component {
 
   handleRefund = (id) => {
     const { details1 } = this.state
-    // console.log(id1)
+    console.log(id)
     // console.log(e.target.value)
     console.log("details value==>>", details1)
     const arr = Object.values(details1)
@@ -416,12 +425,9 @@ class Orders extends React.Component {
   }
 
   refundclick = (rf) => {
-    const { expandedKeys, id, prodid, details1, rowid, rowid1, custom } = this.state
+    const { expandedKeys, details1, custom } = this.state
     const { orders } = this.props
-    if (custom) {
-      console.log("from hereon====>>", this.amountinput.current.inputNumberRef.state.value, rf)
-    }
-    console.log(expandedKeys, id, prodid, details1, rowid, rowid1, orders.details.orders.data)
+    // console.log(expandedKeys, id, prodid, details1, rowid, rowid1, orders.details.orders.data)
     const arr = Object.values(details1)
     const somearr = [...arr]
     let newData = []
@@ -446,7 +452,7 @@ class Orders extends React.Component {
       obj = {
         orderId: expandedKeys[0],
         refundItems: newobj,
-        refundAmount: this.amountinput.current.inputNumberRef.state.value
+        refundAmount: parseFloat(this.amountinput.current.inputNumberRef.state.value).toFixed(2)
       }
     } else {
       obj = {
@@ -455,7 +461,25 @@ class Orders extends React.Component {
         refundAmount: parseFloat(rf / 100).toFixed(2)
       }
     }
+    console.log(obj.refundAmount)
     console.log(obj)
+    // alert(obj.refundAmount)
+  }
+
+  filterbutton = () => {
+    const { filterbutton } = this.state
+    this.setState({
+      filterbutton: !filterbutton,
+      searchbutton: false
+    })
+  }
+
+  searchbutton = () => {
+    const { searchbutton } = this.state
+    this.setState({
+      searchbutton: !searchbutton,
+      filterbutton: false
+    })
   }
 
   render() {
@@ -470,7 +494,7 @@ class Orders extends React.Component {
     // const { searchText, filterDropdownVisible, filtered } = this.state
     const { orders, form } = this.props
     const { getFieldDecorator } = form;
-    const { expandedKeys, filterClick, refund, id, val, prodid, details1, error, form1, rowid, rowid1, rowdetail, visible, custom } = this.state
+    const { expandedKeys, filterClick, refund, id, val, prodid, details1, error, form1, rowid, rowid1, rowdetail, visible, custom, filterbutton, searchbutton } = this.state
     console.log(id)
     console.log(rowid, rowid1)
     console.log("row==>", rowdetail)
@@ -1012,7 +1036,48 @@ class Orders extends React.Component {
             </div>
           </div>
           <div className="card-body">
-            <Collapse
+            <Row>
+              <Col span={3}>
+                <Card>
+                  <Button className="button" onClick={this.filterbutton}> Filter
+                    {/* <Icon type="plus" />  */}
+                  </Button>
+                  {filterbutton ?
+                    <div style={{ margin: "auto", textAlign: "center" }}>
+                      <br />
+                      <Dropdown overlay={menu}>
+                        <span>
+                          Time &nbsp; <Icon type="down" />
+                        </span>
+                      </Dropdown>
+                    </div> : null}
+                </Card>
+              </Col>
+              <Col span={searchbutton ? 6 : 3}>
+                <Card>
+                  <Button className="button" onClick={this.searchbutton}> Search
+                    {/* <Icon type="plus" />  */}
+                  </Button>
+                  {searchbutton ?
+                    <div>
+                      <br />
+                      Customer Name:
+                      <span>
+                        <Input
+                          style={{ width: "10vw" }}
+                          // className="form-control name"
+                          ref={this.nameinput}
+                          // ref={(n) => { this.name = n; }}
+                          type="text"
+                        />
+                        &nbsp;
+                        <Button className="button" type="primary" onClick={this.namefilterclicked}> Search </Button>
+                      </span>
+                    </div> : null}
+                </Card>
+              </Col>
+            </Row>
+            {/* <Collapse
               accordion
               style={{ width: "50%", textAlign: "center", margin: "auto" }}
               expandIcon={({ isActive }) => <Icon type="caret-right" rotate={isActive ? 90 : 0} />}
@@ -1023,14 +1088,14 @@ class Orders extends React.Component {
                   <br />
                   <Dropdown overlay={menu}>
                     <span>
-                      Filter Dropdown &nbsp; <Icon type="down" />
+                      Time &nbsp; <Icon type="down" />
                     </span>
                   </Dropdown>
                 </div>
                 <br />
                 <p> OR </p>
                 <div style={{ backgroundColor: '#f7f7f7' }}>
-                  Filter by Customer Name: &nbsp;
+                  Customer Name: &nbsp;
                   <span>
                     <input
                       style={{ width: "10vw", margin: "auto", borderRadius: "10%" }}
@@ -1039,14 +1104,13 @@ class Orders extends React.Component {
                       type="text"
                     />
                     &nbsp;
-                    <Button type="primary" className="button" onClick={this.namefilterclicked}> Filter </Button>
+                    <Button type="primary" className="button" onClick={this.namefilterclicked}> Search </Button>
                   </span>
                 </div>
               </Panel>
-            </Collapse>
-            <br />
+            </Collapse> */}
             {filterClick ?
-              <div style={{ marginLeft: "48%" }}><Button type="primary" className="button" onClick={this.showall}> Reset Filters </Button>
+              <div><Button type="primary" className="button" onClick={this.showall}> Reset </Button>
               </div> : null}
             <br />
             <Table
@@ -1061,7 +1125,7 @@ class Orders extends React.Component {
               rowKey={record => record.id}
               onRow={(record) => {
                 return {
-                  onClick: () => this.handlerowclick(record)
+                  onClick: (e) => this.handlerowclick(e, record)
                 };
               }}
               expandedRowRender={(record) =>
@@ -1232,42 +1296,19 @@ class Orders extends React.Component {
                             <Descriptions.Item label="Grand Total" span={3} style={{ textAlign: "right" }}>{ta !== 0 ? `$${parseFloat(gt / 100).toFixed(2)}` : `$0.00`}</Descriptions.Item>
                           </Descriptions> :
                           <Descriptions bordered style={{ textAlign: "right", width: "355px", position: "absolute", right: "0", overflow: "auto" }}>
-                            {/* <Descriptions.Item label="Total Amount" span={3} style={{ textAlign: "right" }}>${parseFloat((ta + tt) / 100).toFixed(2)} </Descriptions.Item> */}
-                            <Descriptions.Item label="Total Refund Amount" span={3} style={{ textAlign: "right" }}>${parseFloat(rf / 100).toFixed(2)}</Descriptions.Item>
-                            <Descriptions.Item span={3}><Button className="button" type="primary" onClick={this.handlecustom}> {!custom ? "Enter Custom Amount" : "Cancel"} </Button> </Descriptions.Item>
+                            <Descriptions.Item label="Total Refund Amount" span={3} style={{ textAlign: "right" }}>${parseFloat(rf / 100).toFixed(2)} <Icon type={!custom ? "edit" : "close"} onClick={this.handlecustom} /></Descriptions.Item>
+                            {/* <Descriptions.Item span={3}><Button className="button" type="primary" onClick={this.handlecustom}> {!custom ? "Enter Custom Amount" : "Cancel"} </Button> </Descriptions.Item> */}
                             {custom ?
                               <Descriptions.Item> <InputNumber min="0" className={error ? "errorinput" : null} defaultValue={parseFloat(rf / 100).toFixed(2)} onChange={this.changecustom} max={parseFloat(record.meta.display_price.with_tax.amount / 100).toFixed(2)} step={0.01} ref={this.amountinput} />
-                                {/* <Button className="button" type="primary"> Refund </Button> */}
-                                {/* {error ? <p>error</p> : null} */}
                               </Descriptions.Item> : null}
-                            {/* <Descriptions.Item span={3}><Button className="button" type="primary"> Refund </Button> </Descriptions.Item> */}
-                            {/* {custom && error ?
-                              <Descriptions.Item> <InputNumber min="0" className={error ? "errorinput" : null} defaultValue={parseFloat(rf / 100).toFixed(2)} onChange={this.changecustom} max={parseFloat(record.meta.display_price.with_tax.amount / 100).toFixed(2)} step={0.01} />
-                                {/* {error ? <p>error</p> : null}
-                              </Descriptions.Item> : null} */}
-                            {/* <Checkbox>Include Shipping Charges</Checkbox> */}
-                            {/* <Descriptions.Item label="Discounts" span={3} style={{ textAlign: "right" }}>$0.00</Descriptions.Item>
-                            <Descriptions.Item label="Shipping Charges" span={3} style={{ textAlign: "right" }}>{shi === 0 || ta === 0 ? "Free" : `$${parseFloat(shi / 100).toFixed(2)}`}</Descriptions.Item>
-                            <Descriptions.Item label="Grand Total" span={3} style={{ textAlign: "right" }}>{ta !== 0 ? `$${parseFloat(gt / 100).toFixed(2)}` : `$0.00`}</Descriptions.Item> */}
                             {!error ?
                               <Descriptions.Item span={3}><Button className="button" type="primary" onClick={() => this.refundclick(rf)}> Refund </Button>
                               </Descriptions.Item> : null}
                           </Descriptions>
                         }
-                        {/* <div>
-                            
-                            <p> Total Amount - ${parseFloat(ta / 100).toFixed(2)} </p>
-                            <p>Total Tax Amount - ${tt / 100} </p>
-                            {shi === 0 ?
-                              <p style={{ textAlign: "left !important" }}> Shipping Charges - Free </p>
-                              :
-                              <p style={{ textAlign: "left !important" }}> Shipping Charges - ${parseFloat(shi / 100).toFixed(2)} </p>}
-                            <p> Grand Total - ${parseFloat(gt / 100).toFixed(2)} </p>
-                          </div> */}
-                        {/* </Card> */}
+
                       </Row>
                     </div> : <Skeleton active />}
-                  {/* <hr /> */}
                   <br />
 
                   {/* {orders.details.orders ? orders.details.orders.data.map((item) => {
@@ -1352,7 +1393,24 @@ class Orders extends React.Component {
                         <Col span={6}>
                           {form1 ?
                             <div style={{ marginLeft: "5%" }}>
-                              <Modal className="Modal" onOk={this.handleSubmit} onCancel={this.closeModal} visible={visible} title="Edit Shipping Address">
+                              <Modal
+                                className="Modal"
+                                visible={visible}
+                                title="Edit Shipping Address"
+                                footer={[
+                                  <Button key="cancel" className="button" onClick={this.closeModal}>
+                                    Cancel
+                                  </Button>,
+                                  <Button
+                                    key="ok"
+                                    className="button"
+                                    type="primary"
+                                    onClick={this.handleSubmit}
+                                  >
+                                    Edit
+                                  </Button>,
+                                ]}
+                              >
                                 {/* <Card> */}
                                 {/* <Form onSubmit={this.handleSubmit} {...formItemLayout}> */}
                                 <Form layout="vertical">
