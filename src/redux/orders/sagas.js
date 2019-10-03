@@ -15,7 +15,7 @@ export function* getBlogListSaga() {
     try {
         const result = yield call(getBlogList)
         const { data } = result
-        console.log("HERE==>>>>", data)
+        // console.log("HERE==>>>>", data)
         if (result.status === 200) {
             yield put({
                 type: 'orders/SET_STATE',
@@ -42,10 +42,10 @@ export function* getBlogListSaga() {
 export function* viewOrderDetail(payload) {
     try {
         const result = yield call(viewDetail, payload)
-        console.log(result)
+        // console.log(result)
         const { data } = result
         if (result.status === 200) {
-            console.log(data.product)
+            // console.log(data.product)
             // data.product.map((item) => {
             //     if (!Array.isArray(item)) {
             //         const result2 = getName1(item.vendorId)
@@ -115,7 +115,7 @@ export function* updateShippingAddressSaga(payload) {
     try {
         const result = yield call(updateShippingAddress, payload)
         const { data } = result
-        console.log(data)
+        // console.log(data)
         if (result.status === 200) {
             yield put({
                 type: 'orders/UPDATE_LIST',
@@ -142,7 +142,7 @@ export function* getName1(payload) {
     try {
         const result = yield call(getName, payload)
         const { data } = result
-        console.log(data)
+        // console.log(data)
         if (result.status === 200) {
             yield put({
                 type: 'orders/SET_DETAIL',

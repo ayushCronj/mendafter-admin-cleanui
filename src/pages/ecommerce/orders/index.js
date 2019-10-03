@@ -55,10 +55,10 @@ class Orders extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { orders } = this.props;
-    console.log("this,props", this.props)
-    console.log("Next Props========>,", nextProps)
+    // console.log("this,props", this.props)
+    // console.log("Next Props========>,", nextProps)
     if (nextProps.orders.detail !== orders.detail) {
-      console.log("HIIIIIIIIIIIIIIII")
+      // console.log("HIIIIIIIIIIIIIIII")
       this.setState({
         details1: nextProps.orders.detail
       })
@@ -141,13 +141,13 @@ class Orders extends React.Component {
       this.setState({
         expandedKeys: [id],
         refund: false,
-        rowid1: id
+        // rowid1: id
       })
     }
   }
 
   namefilterclicked = () => {
-    console.log(this.nameinput.current.state.value)
+    // console.log(this.nameinput.current.state.value)
     const { dispatch } = this.props
     const values = {
       data: {
@@ -168,9 +168,9 @@ class Orders extends React.Component {
 
   handleinput = (e, id1, quantity1) => {
     const { details1 } = this.state
-    console.log(id1)
-    console.log(e.target.value)
-    console.log("details value==>>", details1)
+    // console.log(id1)
+    // console.log(e.target.value)
+    // console.log("details value==>>", details1)
     const arr = Object.values(details1)
     const somearr = [...arr]
     let newData = []
@@ -194,15 +194,15 @@ class Orders extends React.Component {
         return obj
       });
     }
-    console.log(newData)
+    // console.log(newData)
     const newobj = {}
     newData.map((item, index) => {
       newobj[index] = item
       return null
     })
     this.setState({
-      val: e.target.value,
-      prodid: id1,
+      // val: e.target.value,
+      // prodid: id1,
       details1: newobj
     })
   }
@@ -327,9 +327,9 @@ class Orders extends React.Component {
 
   handleRefund = (id) => {
     const { details1 } = this.state
-    console.log(id)
+    // console.log(id)
     // console.log(e.target.value)
-    console.log("details value==>>", details1)
+    // console.log("details value==>>", details1)
     const arr = Object.values(details1)
     const somearr = [...arr]
     let newData = []
@@ -341,7 +341,7 @@ class Orders extends React.Component {
       }
       // return obj
     });
-    console.log(newData)
+    // console.log(newData)
     const newobj = {}
     newData.map((item, index) => {
       newobj[index] = item
@@ -359,10 +359,10 @@ class Orders extends React.Component {
     const { orders } = this.props
     const somear = [...orders.orders.data]
     const obj1 = somear.find(o => o.id === id)
-    console.log(obj1)
+    // console.log(obj1)
     // obj1.quantity = parseInt(e.target.value, 10)
     // console.log(obj1)
-    console.log(somear)
+    // console.log(somear)
     this.setState({
       form1: true,
       visible: true,
@@ -376,7 +376,7 @@ class Orders extends React.Component {
     const { rowid } = this.state
     e.preventDefault();
     let data
-    console.log("hi")
+    // console.log("hi")
     const { form } = this.props
     form.validateFields((err, values) => {
       if (!err) {
@@ -407,11 +407,20 @@ class Orders extends React.Component {
     })
   }
 
+  handleExpandClose = () => {
+    // console.log("clciked")
+    // const {expandedKeys} = this.state
+    this.setState({
+      expandedKeys: [1]
+    })
+  }
+
   changecustom = (value) => {
-    const { rowid1 } = this.state
+    // const { rowid1 } = this.state
+    const {expandedKeys} = this.state
     const { orders } = this.props
     const somear = [...orders.orders.data]
-    const obj1 = somear.find(o => o.id === rowid1)
+    const obj1 = somear.find(o => o.id === expandedKeys[0])
     if (value > parseFloat(obj1.meta.display_price.with_tax.amount / 100).toFixed(2) || value < 0) {
       this.setState({
         error: true
@@ -441,27 +450,27 @@ class Orders extends React.Component {
       return null;
     });
     newData = newData.filter(function (x) { return x !== null; })
-    console.log(newData)
-    const newobj = {}
-    newData.map((item, index) => {
-      newobj[index] = item
-      return null
-    })
+    // console.log(newData)
+    // const newobj = {}
+    // newData.map((item, index) => {
+    //   newobj[index] = item
+    //   return null
+    // })
     let obj = {}
     if (custom) {
       obj = {
         orderId: expandedKeys[0],
-        refundItems: newobj,
-        refundAmount: parseFloat(this.amountinput.current.inputNumberRef.state.value).toFixed(2)
+        refundItems: newData,
+        refundAmount: +parseFloat(this.amountinput.current.inputNumberRef.state.value).toFixed(2)
       }
     } else {
       obj = {
         orderId: expandedKeys[0],
-        refundItems: newobj,
-        refundAmount: parseFloat(rf / 100).toFixed(2)
+        refundItems: newData,
+        refundAmount: +parseFloat(rf / 100).toFixed(2)
       }
     }
-    console.log(obj.refundAmount)
+    // console.log(obj.refundAmount)
     console.log(obj)
     // alert(obj.refundAmount)
   }
@@ -494,12 +503,12 @@ class Orders extends React.Component {
     // const { searchText, filterDropdownVisible, filtered } = this.state
     const { orders, form } = this.props
     const { getFieldDecorator } = form;
-    const { expandedKeys, filterClick, refund, id, val, prodid, details1, error, form1, rowid, rowid1, rowdetail, visible, custom, filterbutton, searchbutton } = this.state
+    const { expandedKeys, filterClick, refund, id, details1, error, form1, rowid, rowdetail, visible, custom, filterbutton, searchbutton } = this.state
     console.log(id)
-    console.log(rowid, rowid1)
-    console.log("row==>", rowdetail)
-    console.log(details1)
-    console.log("This=========>", orders.details)
+    // console.log(rowid, rowid1)
+    // console.log("row==>", rowdetail)
+    // console.log(details1)
+    // console.log("This=========>", orders.details)
     const menu = (
       <Menu>
         <Menu.Item onClick={this.handleChange} key="week">This week</Menu.Item>
@@ -592,6 +601,7 @@ class Orders extends React.Component {
         title: 'Grand Total',
         dataIndex: 'meta.display_price.with_tax.formatted',
         key: 'total',
+        align: 'right',
         render: text => <p>{`${text}`}</p>,
         sorter: (a, b) => parseInt(a.meta.display_price.with_tax.amount, 10) - parseInt(b.meta.display_price.with_tax.amount, 10),
       },
@@ -976,7 +986,7 @@ class Orders extends React.Component {
           return (
             <p>
               {/* {`${text}`}<strike style={{ color: "red" }}>{text} </strike> {console.log(prodid)}{console.log(record)} */}
-              {parseInt(obj1.quantity, 10) !== parseInt(record.quantity, 10) ? <p>  ${parseFloat((obj1.quantity * record.meta.display_price.without_tax.unit.amount) / 100).toFixed(2)} </p> : `${text}`}
+              {parseInt(obj1.quantity, 10) !== parseInt(record.quantity, 10) ? `${parseFloat((obj1.quantity * record.meta.display_price.without_tax.unit.amount) / 100).toFixed(2)}` : `${text}`}
             </p>
           )
         },
@@ -1009,7 +1019,7 @@ class Orders extends React.Component {
           return (
             <p>
               {/* {`${text}`} <strike style={{ color: "red" }}>{text} </strike>  {console.log(prodid)}{console.log(record)} */}
-              {parseInt(obj1.quantity, 10) !== parseInt(record.quantity, 10) ? <p> ${parseFloat((obj1.quantity * record.meta.display_price.with_tax.unit.amount) / 100).toFixed(2)} </p> : `${text}`}
+              {parseInt(obj1.quantity, 10) !== parseInt(record.quantity, 10) ? parseFloat((obj1.quantity * record.meta.display_price.with_tax.unit.amount) / 100).toFixed(2) : `${text}`}
             </p>
           )
         },
@@ -1039,7 +1049,7 @@ class Orders extends React.Component {
             <Row>
               <Col span={3}>
                 <Card>
-                  <Button className="button" onClick={this.filterbutton}> Filter
+                  <Button className="button" onClick={this.filterbutton}> Filter<Icon type="plus" style={{ fontSize: "13px" }} />
                     {/* <Icon type="plus" />  */}
                   </Button>
                   {filterbutton ?
@@ -1055,7 +1065,7 @@ class Orders extends React.Component {
               </Col>
               <Col span={searchbutton ? 6 : 3}>
                 <Card>
-                  <Button className="button" onClick={this.searchbutton}> Search
+                  <Button className="button" onClick={this.searchbutton}> Search<Icon type="plus" style={{ fontSize: "13px" }} />
                     {/* <Icon type="plus" />  */}
                   </Button>
                   {searchbutton ?
@@ -1113,79 +1123,73 @@ class Orders extends React.Component {
               <div><Button type="primary" className="button" onClick={this.showall}> Reset </Button>
               </div> : null}
             <br />
-            <Table
-              className="utils__scrollTable"
-              scroll={{ x: '100%' }}
-              columns={columns}
-              expandedRowKeys={expandedKeys}
-              dataSource={orders.orders.data}
-              onChange={this.handleTableChange}
-              expandIconAsCell={false}
-              expandIconColumnIndex={20}
-              rowKey={record => record.id}
-              onRow={(record) => {
-                return {
-                  onClick: (e) => this.handlerowclick(e, record)
-                };
-              }}
-              expandedRowRender={(record) =>
-                // <div style={{ backgroundColor: "#ffffff" }}>
-                <Card style={{ boxShadow: "inset 0 0 3px #000000" }}>
-                  {orders.details.orders ?
-                    <div>
-                      {/* {orders.details.orders.data = orders.details.orders.data.splice(orders.details.orders.data.findIndex(x => x.name === 'Shipping Charges'), 1)} */}
-                      <Row>
-                        <Table
-                          className="tableproduct"
-                          rowClassName="rowproduct"
-                          bordered
-                          size='small'
-                          // expandIconAsCell={false}
-                          // scroll={{ x: '110%' }}
-                          // scroll={{ x: '70%' }}
-                          columns={columns1}
-                          dataSource={orders.details.orders.data.filter(function (x) { return x.name !== "Shipping Charges"; })}
-                          // dataSource={orders.details.orders.data}
-                          rowKey={record1 => record1.product_id}
-                          pagination={{ hideOnSinglePage: true }}
-                          expandedRowRender={record1 => {
-                            obj2 = orders.details.orders.product.find(o => (o.id === record1.product_id))
-                            return (
-                              // <Card>
-                              //   {/* {console.log("here======", record1)} */}
-                              //   {/* {obj2 = orders.details.orders.product.find(o => (o.id === record1.product_id))} */}
-                              //   <p>Vendor Order Id {record1.vendorOrderId}</p>
-                              //   <p>Vendor Name {record1.vendorName}</p>
-                              //   <p>Vendor SKU {obj2 && obj2.vendorProductSKU ? obj2.vendorProductSKU : 'NA'}</p>
-                              //   <p>Cost of Goods {obj2 && obj2.vendorProductSKU ? obj2.vendorProductPrice : 'NA'}</p>
-                              //   <p>Shipping Date{record1.date}</p>
-                              //   <p>Tracking ID {record1.trackingID}</p>
-                              //   <p>Carrier {record1.carrier}</p>
-                              // </Card>
-                              <Card>
-                                <Descriptions bordered>
-                                  <Descriptions.Item label="Shipping Date" span={1} className="desitem">{record1 && record1.date ? record1.date : 'NA'}</Descriptions.Item>
-                                  <Descriptions.Item label="Vendor Name" span={2} className="desitem">{record1 && record1.vendorname ? record1.vendorname : 'NA'}</Descriptions.Item>
-                                  <Descriptions.Item label="Tracking ID" span={1} className="desitem">{record1 && record1.trackingID ? record1.trackingID : 'NA'}</Descriptions.Item>
-                                  <Descriptions.Item label="Vendor Order ID" span={2} className="desitem">{record1 && record1.vendorOrderId ? record1.vendorOrderId : 'NA'}</Descriptions.Item>
-                                  <Descriptions.Item label="Carrier" span={1} className="desitem">{record1 && record1.carrier ? record1.carrier : 'NA'}</Descriptions.Item>
-                                  <Descriptions.Item label="Vendor SKU" span={2} className="desitem">{obj2 && obj2.vendorProductSKU ? obj2.vendorProductSKU : 'NA'}</Descriptions.Item>
-                                  <Descriptions.Item label="Bought For" span={1} className="desitem">{record1 && record1.registryname ? record1.registryname : 'Self'}</Descriptions.Item>
-                                  <Descriptions.Item label="Cost of Goods" span={2} className="desitem">{obj2 && obj2.vendorProductPrice ? obj2.vendorProductPrice : 'NA'}</Descriptions.Item>
-                                  {/* <Descriptions.Item label="Shipping Date" span={3} className="desitem">{record1 && record1.date ? record1.date : 'NA'}</Descriptions.Item> */}
-                                </Descriptions>
-                              </Card>
-                            )
-                          }
-                          }
-                        />
-                      </Row>
+            {orders.orders.data ?
+              <Table
+                className="utils__scrollTable"
+                scroll={{ x: '100%' }}
+                columns={columns}
+                expandedRowKeys={expandedKeys}
+                dataSource={orders.orders.data}
+                onChange={this.handleTableChange}
+                expandIconAsCell={false}
+                expandIconColumnIndex={20}
+                rowKey={record => record.id}
+                onRow={(record) => {
+                  return {
+                    onClick: (e) => this.handlerowclick(e, record)
+                  };
+                }}
+                expandedRowRender={(record) =>
+                  // <div style={{ backgroundColor: "#ffffff" }}>
+                  <Card style={{ boxShadow: "inset 0 0 3px #000000" }}>
+                    {orders.details.orders ?
+                      <div>
 
-                      <Row style={{ height: "220px" }}>
-                        {console.log(val, prodid)}
-                        {/* {arr1 = Object.values(details1)} */}
-                        {/* {somearr1 = [...arr1]} */}
-                        {/* {orders.details.orders.data.map((item) => {
+                        {/* <Button className="closeicon" onClick={this.handleExpandClose}><Icon type="close" />
+                        </Button> */}
+
+                        {/* {orders.details.orders.data = orders.details.orders.data.splice(orders.details.orders.data.findIndex(x => x.name === 'Shipping Charges'), 1)} */}
+                        <Row>
+                          <Table
+                            className="tableproduct"
+                            rowClassName="rowproduct"
+                            bordered
+                            size='small'
+                            // expandIconAsCell={false}
+                            // scroll={{ x: '110%' }}
+                            // scroll={{ x: '70%' }}
+                            columns={columns1}
+                            dataSource={orders.details.orders.data.filter(function (x) { return x.name !== "Shipping Charges"; })}
+                            // dataSource={orders.details.orders.data}
+                            rowKey={record1 => record1.product_id}
+                            pagination={{ hideOnSinglePage: true }}
+                            expandedRowRender={record1 => {
+                              obj2 = orders.details.orders.product.find(o => (o.id === record1.product_id))
+                              return (
+                                <Card>
+                                  <Descriptions bordered style={{ textAlign: "right" }}>
+                                    <Descriptions.Item label="Shipping Date" span={1}>{record1 && record1.date ? record1.date : 'NA'}</Descriptions.Item>
+                                    <Descriptions.Item label="Vendor Name" span={2}>{record1 && record1.vendorname ? record1.vendorname : 'NA'}</Descriptions.Item>
+                                    <Descriptions.Item label="Tracking ID" span={1}>{record1 && record1.trackingID ? record1.trackingID : 'NA'}</Descriptions.Item>
+                                    <Descriptions.Item label="Vendor Order ID" span={2}>{record1 && record1.vendorOrderId ? record1.vendorOrderId : 'NA'}</Descriptions.Item>
+                                    <Descriptions.Item label="Carrier" span={1}>{record1 && record1.carrier ? record1.carrier : 'NA'}</Descriptions.Item>
+                                    <Descriptions.Item label="Vendor SKU" span={2}>{obj2 && obj2.vendorProductSKU ? obj2.vendorProductSKU : 'NA'}</Descriptions.Item>
+                                    <Descriptions.Item label="Bought For" span={1}>{record1 && record1.registryname ? record1.registryname : 'Self'}</Descriptions.Item>
+                                    <Descriptions.Item label="Cost of Goods" span={2}>{obj2 && obj2.vendorProductPrice ? obj2.vendorProductPrice : 'NA'}</Descriptions.Item>
+                                    {/* <Descriptions.Item label="Shipping Date" span={3} className="desitem">{record1 && record1.date ? record1.date : 'NA'}</Descriptions.Item> */}
+                                  </Descriptions>
+                                </Card>
+                              )
+                            }
+                            }
+                          />
+                        </Row>
+
+                        <Row style={!refund ? { height: "220px" } : { height: "124px" }}>
+                          {/* {console.log(prodid)} */}
+                          {/* {arr1 = Object.values(details1)} */}
+                          {/* {somearr1 = [...arr1]} */}
+                          {/* {orders.details.orders.data.map((item) => {
                           // obj2 = somearr1.find(o => (o.id === item.id))
                           // console.log(obj2)
                           Object.keys(details1).forEach(key => {
@@ -1222,24 +1226,24 @@ class Orders extends React.Component {
                           return null
                         })} */}
 
-                        {Object.keys(details1).forEach(key => {
-                          console.log(details1[key]);
-                          ta += (details1[key].quantity * details1[key].meta.display_price.without_tax.unit.amount)
-                          rf += (details1[key].meta.display_price.with_tax.unit.amount - (orders.details.orders.data[key].quantity - details1[key].quantity) * details1[key].meta.display_price.with_tax.unit.amount)
-                          // tq += item.quantity
-                          tt += (details1[key].quantity * details1[key].meta.display_price.tax.unit.amount)
-                          gt += (details1[key].quantity * details1[key].meta.display_price.with_tax.unit.amount)
-                          if (details1[key].name === "Shipping Charges") {
-                            shi += details1[key].meta.display_price.with_tax.value.amount;
-                            ta -= details1[key].meta.display_price.with_tax.value.amount
-                            ta += details1[key].meta.display_price.tax.value.amount
-                            // rf -= details1[key].meta.display_price.with_tax.value.amount
-                            tt -= details1[key].meta.display_price.tax.value.amount
-                            // tq -= item.quantity
-                            // tt -= item.meta.display_price.tax.value.amount
-                          }
-                        })}
-                        {/* {arr1 = Object.values(details1)}
+                          {Object.keys(details1).forEach(key => {
+                            // console.log(details1[key]);
+                            ta += (details1[key].quantity * details1[key].meta.display_price.without_tax.unit.amount)
+                            rf += (details1[key].meta.display_price.with_tax.unit.amount - (orders.details.orders.data[key].quantity - details1[key].quantity) * details1[key].meta.display_price.with_tax.unit.amount)
+                            // tq += item.quantity
+                            tt += (details1[key].quantity * details1[key].meta.display_price.tax.unit.amount)
+                            gt += (details1[key].quantity * details1[key].meta.display_price.with_tax.unit.amount)
+                            if (details1[key].name === "Shipping Charges") {
+                              shi += details1[key].meta.display_price.with_tax.value.amount;
+                              ta -= details1[key].meta.display_price.with_tax.value.amount
+                              ta += details1[key].meta.display_price.tax.value.amount
+                              // rf -= details1[key].meta.display_price.with_tax.value.amount
+                              tt -= details1[key].meta.display_price.tax.value.amount
+                              // tq -= item.quantity
+                              // tt -= item.meta.display_price.tax.value.amount
+                            }
+                          })}
+                          {/* {arr1 = Object.values(details1)}
                         {somearr1 = [...arr1]}
                         {console.log("somearr", somearr1)}
                         {somearr1.map((item) => {
@@ -1266,7 +1270,7 @@ class Orders extends React.Component {
 
                           return null
                         })} */}
-                        {/* <Card style={{ width: "300px", position: "absolute", right: "0", overflow: "auto", backgroundColor: "rgb(235, 235, 245)" }}>
+                          {/* <Card style={{ width: "300px", position: "absolute", right: "0", overflow: "auto", backgroundColor: "rgb(235, 235, 245)" }}>
                           <table>
                             <tbody>
                               <tr>
@@ -1287,39 +1291,39 @@ class Orders extends React.Component {
                               </tr>
                             </tbody>
                           </table> */}
-                        {!refund ?
-                          <Descriptions bordered style={{ textAlign: "right", width: "280px", position: "absolute", right: "0", overflow: "auto" }}>
-                            <Descriptions.Item label="Total Amount" span={3} style={{ textAlign: "right" }}>${parseFloat(ta / 100).toFixed(2)} </Descriptions.Item>
-                            <Descriptions.Item label="Taxes" span={3} style={{ textAlign: "right" }}>{ta !== 0 ? `$${parseFloat(tt / 100).toFixed(2)}` : `$0.00`}</Descriptions.Item>
-                            <Descriptions.Item label="Discounts" span={3} style={{ textAlign: "right" }}>$0.00</Descriptions.Item>
-                            <Descriptions.Item label="Shipping Charges" span={3} style={{ textAlign: "right" }}>{shi === 0 || ta === 0 ? "Free" : `$${parseFloat(shi / 100).toFixed(2)}`}</Descriptions.Item>
-                            <Descriptions.Item label="Grand Total" span={3} style={{ textAlign: "right" }}>{ta !== 0 ? `$${parseFloat(gt / 100).toFixed(2)}` : `$0.00`}</Descriptions.Item>
-                          </Descriptions> :
-                          <Descriptions bordered style={{ textAlign: "right", width: "355px", position: "absolute", right: "0", overflow: "auto" }}>
-                            <Descriptions.Item label="Total Refund Amount" span={3} style={{ textAlign: "right" }}>${parseFloat(rf / 100).toFixed(2)} <Icon type={!custom ? "edit" : "close"} onClick={this.handlecustom} /></Descriptions.Item>
-                            {/* <Descriptions.Item span={3}><Button className="button" type="primary" onClick={this.handlecustom}> {!custom ? "Enter Custom Amount" : "Cancel"} </Button> </Descriptions.Item> */}
-                            {custom ?
-                              <Descriptions.Item> <InputNumber min="0" className={error ? "errorinput" : null} defaultValue={parseFloat(rf / 100).toFixed(2)} onChange={this.changecustom} max={parseFloat(record.meta.display_price.with_tax.amount / 100).toFixed(2)} step={0.01} ref={this.amountinput} />
-                              </Descriptions.Item> : null}
-                            {!error ?
-                              <Descriptions.Item span={3}><Button className="button" type="primary" onClick={() => this.refundclick(rf)}> Refund </Button>
-                              </Descriptions.Item> : null}
-                          </Descriptions>
-                        }
+                          {!refund ?
+                            <Descriptions bordered style={{ textAlign: "right", width: "280px", position: "absolute", right: "0", overflow: "auto" }}>
+                              <Descriptions.Item label="Total Amount" span={3} style={{ textAlign: "right" }}>${parseFloat(ta / 100).toFixed(2)} </Descriptions.Item>
+                              <Descriptions.Item label="Taxes" span={3} style={{ textAlign: "right" }}>{ta !== 0 ? `$${parseFloat(tt / 100).toFixed(2)}` : `$0.00`}</Descriptions.Item>
+                              <Descriptions.Item label="Discounts" span={3} style={{ textAlign: "right" }}>$0.00</Descriptions.Item>
+                              <Descriptions.Item label="Shipping Charges" span={3} style={{ textAlign: "right" }}>{shi === 0 || ta === 0 ? "Free" : `$${parseFloat(shi / 100).toFixed(2)}`}</Descriptions.Item>
+                              <Descriptions.Item label="Grand Total" span={3} style={{ textAlign: "right" }}>{ta !== 0 ? `$${parseFloat(gt / 100).toFixed(2)}` : `$0.00`}</Descriptions.Item>
+                            </Descriptions> :
+                            <Descriptions bordered style={{ textAlign: "right", width: "355px", position: "absolute", right: "0", overflow: "auto" }}>
+                              <Descriptions.Item label="Total Refund Amount" span={3} style={{ textAlign: "right" }}>${parseFloat(rf / 100).toFixed(2)} <Icon type={!custom ? "edit" : "close"} onClick={this.handlecustom} /></Descriptions.Item>
+                              {/* <Descriptions.Item span={3}><Button className="button" type="primary" onClick={this.handlecustom}> {!custom ? "Enter Custom Amount" : "Cancel"} </Button> </Descriptions.Item> */}
+                              {custom ?
+                                <Descriptions.Item> <InputNumber min={0} className={error ? "errorinput" : null} defaultValue={parseFloat(rf / 100).toFixed(2)} onChange={this.changecustom} max={+parseFloat(record.meta.display_price.with_tax.amount / 100).toFixed(2)} step={0.01} ref={this.amountinput} />
+                                </Descriptions.Item> : null}
+                              {!error ?
+                                <Descriptions.Item><Button className="button" type="primary" onClick={() => this.refundclick(rf)}> Refund </Button>
+                                </Descriptions.Item> : null}
+                            </Descriptions>
+                          }
 
-                      </Row>
-                    </div> : <Skeleton active />}
-                  <br />
+                        </Row>
+                      </div> : <Skeleton active />}
+                    <br />
 
-                  {/* {orders.details.orders ? orders.details.orders.data.map((item) => {
+                    {/* {orders.details.orders ? orders.details.orders.data.map((item) => {
                     if (item.trackingID === null) {
                       count += 1;
                     }
                     return null
                   }) : null} */}
-                  {/* <Row style={{ display: "flex", justifyContent: "center", paddingBottom: "1%" }}> */}
-                  {/* <Col span={12} style={{ textAlign: "left" }}> */}
-                  {/* <div>
+                    {/* <Row style={{ display: "flex", justifyContent: "center", paddingBottom: "1%" }}> */}
+                    {/* <Col span={12} style={{ textAlign: "left" }}> */}
+                    {/* <div>
                       <Card title="Billing Address">
                         <p>{record.billing_address.first_name}&nbsp;{record.billing_address.last_name}</p>
                         <p> {record.billing_address.line_1}</p>
@@ -1331,10 +1335,10 @@ class Orders extends React.Component {
                           , {record.billing_address.postcode}
                         </p>
                       </Card> */}
-                  {/* </Col> */}
-                  {/* </div> */}
-                  {/* <Col span={12}> */}
-                  {/* <div style={{ marginLeft: "1%" }}>
+                    {/* </Col> */}
+                    {/* </div> */}
+                    {/* <Col span={12}> */}
+                    {/* <div style={{ marginLeft: "1%" }}>
                       <Card title="Shipping Address">
 
                         <p>{record.shipping_address.first_name}&nbsp;{record.shipping_address.last_name} </p>
@@ -1348,8 +1352,8 @@ class Orders extends React.Component {
                         </p>
                       </Card>
                     </div> */}
-                  {/* </Col> */}
-                  {/* <Col span={8} style={{ textAlign: "left" }}>
+                    {/* </Col> */}
+                    {/* <Col span={8} style={{ textAlign: "left" }}>
                       <Card className="cardstatus" title="Shipping Details">
                         {orders.details.orders ?
                           <div className="divstatus">
@@ -1364,177 +1368,177 @@ class Orders extends React.Component {
                           </div> : <Skeleton active />}
                       </Card>
                     </Col> */}
-                  {/* </Row> */}
-                  {/* </Row> */}
-                  {/* <Sider > */}
-                  <Collapse
-                    accordion
-                    bordered={false}
-                    style={{ margin: "auto" }}
-                    expandIcon={({ isActive }) => <Icon type="caret-right" rotate={isActive ? 90 : 0} />}
-                  >
-                    <Panel header="Other Details" key="1" style={customPanelStyle}>
-                      <Row>
-                        <Col span={6}>
-                          <div>
-                            <Card title="Billing Address" className="card1">
-                              <p>{record.billing_address.first_name}&nbsp;{record.billing_address.last_name}</p>
-                              <p> {record.billing_address.line_1}</p>
-                              <p>{record.billing_address.line_2}</p>
-                              <p>  {record.billing_address.city}
-                                , {record.billing_address.county}
-                              </p>
-                              <p>  {record.billing_address.country}
-                                , {record.billing_address.postcode}
-                              </p>
-                            </Card>
-                          </div>
-                        </Col>
-                        <Col span={6}>
-                          {form1 ?
-                            <div style={{ marginLeft: "5%" }}>
-                              <Modal
-                                className="Modal"
-                                visible={visible}
-                                title="Edit Shipping Address"
-                                footer={[
-                                  <Button key="cancel" className="button" onClick={this.closeModal}>
-                                    Cancel
-                                  </Button>,
-                                  <Button
-                                    key="ok"
-                                    className="button"
-                                    type="primary"
-                                    onClick={this.handleSubmit}
-                                  >
-                                    Edit
-                                  </Button>,
-                                ]}
-                              >
-                                {/* <Card> */}
-                                {/* <Form onSubmit={this.handleSubmit} {...formItemLayout}> */}
-                                <Form layout="vertical">
-                                  <Form.Item label="First Name">
-                                    {getFieldDecorator('shipping_address.first_name', {
-                                      initialValue: rowdetail.shipping_address.first_name,
-                                      rules: [
-                                        {
-                                          required: true,
-                                          message: 'Please input your First-Name!!',
-                                        },
-                                      ],
-                                    })(<Input />)}
-                                  </Form.Item>
-                                  <Form.Item label="Last Name">
-                                    {getFieldDecorator('shipping_address.last_name', {
-                                      initialValue: rowdetail.shipping_address.last_name,
-                                      rules: [
-                                        {
-                                          required: true,
-                                          message: 'Please input your Last-Name!!',
-                                        },
-                                      ],
-                                    })(<Input />)}
-                                  </Form.Item>
-                                  <Form.Item label="Line 1">
-                                    {getFieldDecorator('shipping_address.line_1', {
-                                      initialValue: rowdetail.shipping_address.line_1,
-                                      rules: [
-                                        {
-                                          required: true,
-                                          message: 'Please input Line1 of address!!',
-                                        },
-                                      ],
-                                    })(<Input />)}
-                                  </Form.Item>
-                                  <Form.Item label="Line2">
-                                    {getFieldDecorator('shipping_address.line_2', {
-                                      initialValue: rowdetail.shipping_address.line_2,
-                                      // rules: [
-                                      //   {
-                                      //     required: true,
-                                      //     message: 'Please input your First-Name!!',
-                                      //   },
-                                      // ],
-                                    })(<Input />)}
-                                  </Form.Item>
-                                  <Form.Item label="City">
-                                    {getFieldDecorator('shipping_address.city', {
-                                      initialValue: rowdetail.shipping_address.city,
-                                      rules: [
-                                        {
-                                          required: true,
-                                          message: 'Please input your City!!',
-                                        },
-                                      ],
-                                    })(<Input />)}
-                                  </Form.Item>
-                                  <Form.Item label="County">
-                                    {getFieldDecorator('shipping_address.county', {
-                                      initialValue: rowdetail.shipping_address.county,
-                                      // rules: [
-                                      //   {
-                                      //     required: true,
-                                      //     message: 'Please input your First-Name!!',
-                                      //   },
-                                      // ],
-                                    })(<Input />)}
-                                  </Form.Item>
-                                  <Form.Item label="Country">
-                                    {getFieldDecorator('shipping_address.country', {
-                                      initialValue: rowdetail.shipping_address.country,
-                                      rules: [
-                                        {
-                                          required: true,
-                                          message: 'Please input your Country!!',
-                                        },
-                                      ],
-                                    })(<Input />)}
-                                  </Form.Item>
-                                  <Form.Item label="Zip Code">
-                                    {getFieldDecorator('shipping_address.postcode', {
-                                      initialValue: rowdetail.shipping_address.postcode,
-                                      rules: [
-                                        {
-                                          required: true,
-                                          message: 'Please input Postal Code!!',
-                                        },
-                                      ],
-                                    })(<Input />)}
-                                  </Form.Item>
-                                  {/* <Button type="primary" htmlType="submit" onClick={this.handleSubmit}> Update </Button> */}
-                                </Form>
-                                {/* </Card> */}
-                              </Modal>
-                            </div> :
-                            <div style={{ marginLeft: "5%" }}>
-                              <Card title="Shipping Address" className="card1" extra={<Icon theme="filled" style={{ fontSize: "17px" }} type="edit" onClick={() => this.handleForm(record.id)} />}>
-                                <p>{rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.first_name : record.shipping_address.first_name}&nbsp;{rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.last_name : record.shipping_address.last_name} </p>
-                                <p> {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.line_1 : record.shipping_address.line_1} </p>
-                                <p>   {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.line_2 : record.shipping_address.line_2} </p>
-                                <p>  {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.city : record.shipping_address.city}
-                                  , {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.county : record.shipping_address.county}
+                    {/* </Row> */}
+                    {/* </Row> */}
+                    {/* <Sider > */}
+                    <Collapse
+                      accordion
+                      bordered={false}
+                      style={{ margin: "auto" }}
+                      expandIcon={({ isActive }) => <Icon type="caret-right" rotate={isActive ? 90 : 0} />}
+                    >
+                      <Panel header="Other Details" key="1" style={customPanelStyle}>
+                        <Row>
+                          <Col span={6}>
+                            <div>
+                              <Card title="Billing Address" className="card1">
+                                <p>{record.billing_address.first_name}&nbsp;{record.billing_address.last_name}</p>
+                                <p> {record.billing_address.line_1}</p>
+                                <p>{record.billing_address.line_2}</p>
+                                <p>  {record.billing_address.city}
+                                  , {record.billing_address.county}
                                 </p>
-                                <p>  {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.country : record.shipping_address.country}
-                                  , {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.postcode : record.shipping_address.postcode}
+                                <p>  {record.billing_address.country}
+                                  , {record.billing_address.postcode}
                                 </p>
                               </Card>
-                            </div>}
-                        </Col>
+                            </div>
+                          </Col>
+                          <Col span={6}>
+                            {form1 ?
+                              <div style={{ marginLeft: "5%" }}>
+                                <Modal
+                                  className="Modal"
+                                  visible={visible}
+                                  title="Edit Shipping Address"
+                                  footer={[
+                                    <Button key="cancel" className="button" onClick={this.closeModal}>
+                                      Cancel
+                                    </Button>,
+                                    <Button
+                                      key="ok"
+                                      className="button"
+                                      type="primary"
+                                      onClick={this.handleSubmit}
+                                    >
+                                      Edit
+                                    </Button>,
+                                  ]}
+                                >
+                                  {/* <Card> */}
+                                  {/* <Form onSubmit={this.handleSubmit} {...formItemLayout}> */}
+                                  <Form layout="vertical">
+                                    <Form.Item label="First Name">
+                                      {getFieldDecorator('shipping_address.first_name', {
+                                        initialValue: rowdetail.shipping_address.first_name,
+                                        rules: [
+                                          {
+                                            required: true,
+                                            message: 'Please input your First-Name!!',
+                                          },
+                                        ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    <Form.Item label="Last Name">
+                                      {getFieldDecorator('shipping_address.last_name', {
+                                        initialValue: rowdetail.shipping_address.last_name,
+                                        rules: [
+                                          {
+                                            required: true,
+                                            message: 'Please input your Last-Name!!',
+                                          },
+                                        ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    <Form.Item label="Line 1">
+                                      {getFieldDecorator('shipping_address.line_1', {
+                                        initialValue: rowdetail.shipping_address.line_1,
+                                        rules: [
+                                          {
+                                            required: true,
+                                            message: 'Please input Line1 of address!!',
+                                          },
+                                        ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    <Form.Item label="Line2">
+                                      {getFieldDecorator('shipping_address.line_2', {
+                                        initialValue: rowdetail.shipping_address.line_2,
+                                        // rules: [
+                                        //   {
+                                        //     required: true,
+                                        //     message: 'Please input your First-Name!!',
+                                        //   },
+                                        // ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    <Form.Item label="City">
+                                      {getFieldDecorator('shipping_address.city', {
+                                        initialValue: rowdetail.shipping_address.city,
+                                        rules: [
+                                          {
+                                            required: true,
+                                            message: 'Please input your City!!',
+                                          },
+                                        ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    <Form.Item label="County">
+                                      {getFieldDecorator('shipping_address.county', {
+                                        initialValue: rowdetail.shipping_address.county,
+                                        // rules: [
+                                        //   {
+                                        //     required: true,
+                                        //     message: 'Please input your First-Name!!',
+                                        //   },
+                                        // ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    <Form.Item label="Country">
+                                      {getFieldDecorator('shipping_address.country', {
+                                        initialValue: rowdetail.shipping_address.country,
+                                        rules: [
+                                          {
+                                            required: true,
+                                            message: 'Please input your Country!!',
+                                          },
+                                        ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    <Form.Item label="Zip Code">
+                                      {getFieldDecorator('shipping_address.postcode', {
+                                        initialValue: rowdetail.shipping_address.postcode,
+                                        rules: [
+                                          {
+                                            required: true,
+                                            message: 'Please input Postal Code!!',
+                                          },
+                                        ],
+                                      })(<Input />)}
+                                    </Form.Item>
+                                    {/* <Button type="primary" htmlType="submit" onClick={this.handleSubmit}> Update </Button> */}
+                                  </Form>
+                                  {/* </Card> */}
+                                </Modal>
+                              </div> :
+                              <div style={{ marginLeft: "5%" }}>
+                                <Card title="Shipping Address" className="card1" extra={<Icon theme="filled" style={{ fontSize: "17px" }} type="edit" onClick={() => this.handleForm(record.id)} />}>
+                                  <p>{rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.first_name : record.shipping_address.first_name}&nbsp;{rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.last_name : record.shipping_address.last_name} </p>
+                                  <p> {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.line_1 : record.shipping_address.line_1} </p>
+                                  <p>   {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.line_2 : record.shipping_address.line_2} </p>
+                                  <p>  {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.city : record.shipping_address.city}
+                                    , {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.county : record.shipping_address.county}
+                                  </p>
+                                  <p>  {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.country : record.shipping_address.country}
+                                    , {rowdetail.shipping_address && record.id === rowid ? rowdetail.shipping_address.postcode : record.shipping_address.postcode}
+                                  </p>
+                                </Card>
+                              </div>}
+                          </Col>
 
-                        <Col span={6}>
-                          <div style={{ marginLeft: "5%" }}>
-                            <Card title="Customer Details" className="card1" style={{ height: "264px" }}>
-                              <p>Name : {record.customer.name} </p>
-                              <p>Email : {record.customer.email} </p>
-                              <p>Phone Number : {record.customer.phone ? record.customer.phone : 'NA'} </p>
-                            </Card>
-                          </div>
-                        </Col>
-                      </Row>
-                    </Panel>
-                  </Collapse>
-                  {/* <Tabs tabPosition="left" style={{ marginLeft: "6%" }}>
+                          <Col span={6}>
+                            <div style={{ marginLeft: "5%" }}>
+                              <Card title="Customer Details" className="card1" style={{ height: "264px" }}>
+                                <p>Name : {record.customer.name} </p>
+                                <p>Email : {record.customer.email} </p>
+                                <p>Phone Number : {record.customer.phone ? record.customer.phone : 'NA'} </p>
+                              </Card>
+                            </div>
+                          </Col>
+                        </Row>
+                      </Panel>
+                    </Collapse>
+                    {/* <Tabs tabPosition="left" style={{ marginLeft: "6%" }}>
                     <TabPane tab="Billing Address" key="1">
                       <Card title="Billing Address" className="card1">
                         <div className="carddiv">
@@ -1566,7 +1570,7 @@ class Orders extends React.Component {
                       </Card>
                     </TabPane>
                   </Tabs> */}
-                  {/* <Row>
+                    {/* <Row>
                     <Col span={8} style={{ marginLeft: "17%" }}>
                       <div>
                         <Card title="Billing Address">
@@ -1598,10 +1602,10 @@ class Orders extends React.Component {
                       </div>
                     </Col>
                   </Row> */}
-                  {/* </Sider> */}
-                </Card>
-              }
-            />
+                    {/* </Sider> */}
+                  </Card>
+                }
+              /> : <Skeleton active />}
           </div>
         </div>
       </div>

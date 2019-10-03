@@ -91,6 +91,10 @@
   max-height: 264px;
 }
 
+.ant-table-small > .ant-table-content > .ant-table-body {
+  margin: 0 0 !important;
+}
+
 // .ant-modal-mask{
 //   background: transparent !important
 // }
@@ -162,4 +166,10 @@
     transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     zoom: 1;
   }
+}
+
+.closeicon {
+  font-size: 20px;
+  float: right;
+  height: 32px !important
 }

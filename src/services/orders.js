@@ -20,8 +20,8 @@ export async function viewDetail(body) {
     const url = `http://localhost:3002/api/admin/getOrderItems/${body.payload.id}`
     return axios
         .get(url)
-        .then(response => {
-            if (response) {
+        .then(async response => {
+            if (await response) {
                 const promiseAr = []
                 response.data.product.map((item) => {
                     if (!Array.isArray(item)) {
@@ -31,13 +31,17 @@ export async function viewDetail(body) {
                     return null
                 })
                 Promise.all(promiseAr).then(odata => {
-                    console.log(odata)
+                    // console.log(odata)
+                    odata.map((item)=> {
+                        console.log(item.data.data.vendorName)
+                        return null
+                    })
                     // response.data.odata = odata
                     return response
                 })
-                return response
+                // return response
             }
-            return false
+            return response
         })
         .catch(error => {
             return error
@@ -62,7 +66,7 @@ export async function getFilterOrder(body) {
 export async function updateShippingAddress(body) {
     const url = 'http://localhost:3002/api/orders/updateShippingAddress'
 
-    console.log(body.payload)
+    // console.log(body.payload)
     return axios
         .post(url, body.payload.data)
         .then(response => {
@@ -77,9 +81,9 @@ export async function updateShippingAddress(body) {
 }
 
 export async function getName(body) {
-    console.log(body)
+    // console.log(body)
     const url = `http://localhost:3002/api/vendor/getVendorById/${body}`
-    console.log(url)
+    // console.log(url)
     return axios
         .get(url)
         .then(response => {
