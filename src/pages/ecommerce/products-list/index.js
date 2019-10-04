@@ -1,14 +1,41 @@
+/* eslint-disable */
 import React from 'react'
-import { Table, Button } from 'antd'
+import { Table, Button, Skeleton } from 'antd'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
-import table from './data.json'
+// import { Link } from 'react-router-dom'
+// import table from './data.json'
 // import styles from './style.module.scss'
 
 @connect(({ products }) => ({ products }))
 class ProductsList extends React.Component {
-  state = {
-    data: table.data,
+  // state = {
+  //   click: false,
+  //   product: null
+  // }
+
+  componentDidMount() {
+    const { dispatch } = this.props
+    dispatch({
+      type: 'products/GET_LIST'
+    })
+  }
+
+  handleview = (id) => {
+    // const { language, currentPage } = this.state
+    const { history } = this.props
+    let product = null
+    const { products } = this.props
+    products.products.data.map((item) => {
+      if (item.id === id) {
+        product = item
+      }
+      return null
+    })
+    history.push({
+      pathname: '/ecommerce/product-details',
+      state: { product },
+    })
   }
 
   // onInputChange = e => {
@@ -55,20 +82,23 @@ class ProductsList extends React.Component {
   // }
 
   render() {
-    const { data } = this.state
+    // const { click, product } = this.state
+    const { products } = this.props
+
+    // console.log(click, product)
 
     const columns = [
-      {
-        title: 'Product ID',
-        dataIndex: 'id',
-        key: 'id',
-        render: text => (
-          <a className="utils__link--underlined" href="javascript: void(0);">
-            {`#${text}`}
-          </a>
-        ),
-        sorter: (a, b) => a.id - b.id,
-      },
+      // {
+      //   title: 'Product ID',
+      //   dataIndex: 'id',
+      //   key: 'id',
+      //   render: text => (
+      //     <a className="utils__link--underlined" href="javascript: void(0);">
+      //       {`#${text}`}
+      //     </a>
+      //   ),
+      //   sorter: (a, b) => a.id - b.id,
+      // },
       // {
       //   title: 'Thumbnail',
       //   dataIndex: 'thumbnail',
@@ -84,11 +114,18 @@ class ProductsList extends React.Component {
         dataIndex: 'name',
         key: 'name',
         // sorter: (a, b) => a.name.length - b.name.length,
-        render: text => (
-          <a className="utils__link--underlined" href="javascript: void(0);">
-            {text}
-          </a>
-        ),
+        render: text => {
+          let resultArray = text.split(" ");
+          if (resultArray.length > 7) {
+            resultArray = resultArray.slice(0, 7);
+            text = resultArray.join(" ") + "...";
+          }
+          return (
+            <p>
+              {text}
+            </p>
+          )
+        },
         // filterDropdown: (
         //   <div className="custom-filter-dropdown">
         //     <Input
@@ -115,10 +152,26 @@ class ProductsList extends React.Component {
         // },
       },
       {
-        title: 'Product Type',
-        dataIndex: 'type',
+        title: 'Mend SKU',
+        dataIndex: 'sku',
+        key: 'sku',
+        // width: 100,
+        render: text => (
+          <p>
+            {text ? `${text}` : 'NA'}
+          </p>
+        ),
+      },
+      {
+        title: 'Type',
+        dataIndex: 'type1',
         key: 'type',
-        // sorter: (a, b) => a.type.length - b.type.length,
+        // width: 100,
+        render: text => (
+          <p>
+            {text ? `${text}` : 'NA'}
+          </p>
+        ),
       },
       // {
       //   title: 'Attribute Set',
@@ -126,24 +179,82 @@ class ProductsList extends React.Component {
       //   key: 'attribute',
       //   sorter: (a, b) => a.attribute.length - b.attribute.length,
       // },
+      // {
+      //   title: 'SKU',
+      //   dataIndex: 'sku',
+      //   key: 'sku',
+      //   sorter: (a, b) => a.sku.length - b.sku.length,
+      // },
       {
-        title: 'SKU',
-        dataIndex: 'sku',
-        key: 'sku',
-        sorter: (a, b) => a.sku.length - b.sku.length,
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'shipstatus',
+        // width: 100,
+        render: (text) => (
+          <p
+            className={
+              text === "live"
+                ? 'font-size-12 badge badge-primary'
+                : 'font-size-12 badge badge-default'
+            }
+          >
+            {text}
+          </p>
+        ),
+        filters: [
+          {
+            text: 'Live',
+            value: 'live',
+          },
+          {
+            text: 'Draft',
+            value: 'draft',
+          }
+        ],
+        filterMultiple: false,
+        onFilter: (value, record) => record.status.indexOf(value) === 0,
       },
       {
         title: 'Price',
-        dataIndex: 'price',
+        dataIndex: 'meta.display_price.without_tax.formatted',
         key: 'price',
-        render: text => <span>{`$${text}`}</span>,
-        sorter: (a, b) => a.price - b.price,
+        render: text => <span>{text ? `${text}` : 'NA'}</span>,
+        // sorter: (a, b) => a.meta.display_price.without_tax.formatted - b.meta.display_price.without_tax.formatted,
       },
       {
         title: 'Quantity',
-        dataIndex: 'quantity',
+        dataIndex: 'meta.stock.level',
         key: 'quantity',
-        sorter: (a, b) => a.quantity - b.quantity,
+        sorter: (a, b) => a.meta.stock.level - b.meta.stock.level,
+      },
+      {
+        title: 'Availability',
+        dataIndex: 'meta.stock.availability',
+        key: 'availability',
+        // width: 100,
+        render: (text) => (
+          <p
+            className={
+              text === "out-stock"
+                ? 'font-size-12 badge badge-default'
+                : 'font-size-12 badge badge-primary'
+            }
+          >
+            {text}
+          </p>
+        ),
+        filters: [
+          {
+            text: 'Out of Stock',
+            value: 'out-stock',
+          },
+          {
+            text: 'In Stock',
+            value: 'in-stock',
+          }
+        ],
+        filterMultiple: false,
+        onFilter: (value, record) => record.meta.stock.availability.indexOf(value) === 0,
       },
       // {
       //   title: 'Status',
@@ -155,14 +266,18 @@ class ProductsList extends React.Component {
       {
         title: 'Action',
         key: 'action',
-        render: () => (
+        render: (record) => (
           <span>
-            <Button icon="edit" className="mr-1" size="small">
+            {/* <Link
+              to={{
+                pathname: '/ecommerce/product-details',
+                state: { product },
+              }}
+            > */}
+            <Button icon="edit" className="mr-1" size="small" onClick={() => this.handleview(record.id)}>
               View
             </Button>
-            {/* <Button icon="cross" size="small">
-              Remove
-            </Button> */}
+            {/* </Link> */}
           </span>
         ),
       },
@@ -170,20 +285,22 @@ class ProductsList extends React.Component {
 
     return (
       <div>
-        <Helmet title="Products List" />
+        <Helmet title="All Products" />
         <div className="card">
           <div className="card-header">
             <div className="utils__title">
-              <strong>Products List</strong>
+              <strong>All Products</strong>
             </div>
           </div>
           <div className="card-body">
-            <Table
-              className="utils__scrollTable"
-              scroll={{ x: '100%' }}
-              columns={columns}
-              dataSource={data}
-            />
+            {products.products.data ?
+              <Table
+                className="utils__scrollTable"
+                scroll={{ x: '100%' }}
+                columns={columns}
+                dataSource={products.products.data}
+                rowKey={record => record.id}
+              /> : <Skeleton active />}
           </div>
         </div>
       </div>

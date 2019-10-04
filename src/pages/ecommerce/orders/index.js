@@ -1,6 +1,7 @@
 /* eslint no-underscore-dangle: 0 */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-unused-expressions */
+/* eslint-disable */
 import React from 'react'
 import { Table, Button, Row, Collapse, Icon, Col, Dropdown, Menu, Skeleton, Card, Input, Form, Modal, Descriptions, InputNumber } from 'antd'
 import { Helmet } from 'react-helmet'
@@ -9,7 +10,6 @@ import './custom.scss'
 
 const { Panel } = Collapse;
 const { SubMenu } = Menu;
-// const Loader = () => <h4 style={{ textAlign: "center" }}>Products Data is being prepared</h4>;
 
 @connect(({ orders }) => ({ orders }))
 class Orders extends React.Component {
@@ -327,21 +327,15 @@ class Orders extends React.Component {
 
   handleRefund = (id) => {
     const { details1 } = this.state
-    // console.log(id)
-    // console.log(e.target.value)
-    // console.log("details value==>>", details1)
     const arr = Object.values(details1)
     const somearr = [...arr]
     let newData = []
     newData = somearr.map(obj => {
-      // if (obj.id === id1 && obj.quantity + 1 <= quantity1)
       return {
         ...obj,
         quantity: 0,
       }
-      // return obj
     });
-    // console.log(newData)
     const newobj = {}
     newData.map((item, index) => {
       newobj[index] = item
@@ -416,8 +410,7 @@ class Orders extends React.Component {
   }
 
   changecustom = (value) => {
-    // const { rowid1 } = this.state
-    const {expandedKeys} = this.state
+    const { expandedKeys } = this.state
     const { orders } = this.props
     const somear = [...orders.orders.data]
     const obj1 = somear.find(o => o.id === expandedKeys[0])
@@ -470,9 +463,7 @@ class Orders extends React.Component {
         refundAmount: +parseFloat(rf / 100).toFixed(2)
       }
     }
-    // console.log(obj.refundAmount)
     console.log(obj)
-    // alert(obj.refundAmount)
   }
 
   filterbutton = () => {
@@ -633,38 +624,6 @@ class Orders extends React.Component {
         filterMultiple: false,
         onFilter: (value, record) => record.payment.indexOf(value) === 0,
       },
-      // {
-      //   title: 'Shipping Status',
-      //   dataIndex: 'shipping',
-      //   key: 'shipstatus',
-      //   render: (text) => (
-      //     <p
-      //       className={
-      //         text === 'fulfilled'
-      //           ? 'font-size-12 badge badge-primary'
-      //           : 'font-size-12 badge badge-default'
-      //       }
-      //     >
-      //       {text}
-      //     </p>
-      //   ),
-      //   filters: [
-      //     {
-      //       text: 'Unfulfilled Orders',
-      //       value: 'unfulfilled',
-      //     },
-      //     {
-      //       text: 'Partially Fulfilled Orders',
-      //       value: 'partiallyfulfilled',
-      //     },
-      //     {
-      //       text: 'Unfulfilled Orders',
-      //       value: 'unfulfilled',
-      //     }
-      //   ],
-      //   filterMultiple: false,
-      //   onFilter: (value, record) => record.payment.indexOf(value) === 0,
-      // },
       {
         title: 'Order Status',
         dataIndex: 'status',
@@ -758,11 +717,18 @@ class Orders extends React.Component {
         key: 'name',
         width: 150,
         // fixed: 'left',
-        render: text => (
-          <p>
-            {text ? `${text}` : 'NA'}
-          </p>
-        ),
+        render: text => {
+          let resultArray = text.split(" ");
+          if (resultArray.length > 6) {
+            resultArray = resultArray.slice(0, 6);
+            text = resultArray.join(" ") + "...";
+          }
+          return (
+            <p>
+              {text ? `${text}` : 'NA'}
+            </p>
+          )
+        },
       },
       {
         title: 'Mend SKU',
@@ -775,17 +741,6 @@ class Orders extends React.Component {
           </p>
         ),
       },
-      // {
-      //   title: 'Vendor Order ID',
-      //   dataIndex: 'vendorOrderId',
-      //   key: 'vendorid',
-      //   // width: 100,
-      //   render: text => (
-      //     <p>
-      //       {text ? `${text}` : 'NA'}
-      //     </p>
-      //   ),
-      // },
       {
         title: 'Type',
         dataIndex: 'type1',
@@ -797,59 +752,6 @@ class Orders extends React.Component {
           </p>
         ),
       },
-      // {
-      //   title: 'Vendor Order ID',
-      //   dataIndex: 'vendorOrderId',
-      //   key: 'vendorid',
-      //   width: 100,
-      //   render: text => (
-      //     <p>
-      //       {text ? `${text}` : 'NA'}
-      //     </p>
-      //   ),
-      // },
-      // {
-      //   title: 'Vendor Name',
-      //   dataIndex: 'vendorName',
-      //   key: 'vendorname',
-      //   // width: 100,
-      //   render: text => (
-      //     <p>
-      //       {text ? `${text}` : 'NA'}
-      //     </p>
-      //   ),
-      // },
-      // {
-      //   title: 'Vendor SKU',
-      //   dataIndex: 'vendorsku',
-      //   key: 'vendorsku',
-      //   // width: 100,
-      //   render: (text, record) => {
-      //     obj2 = orders.details.orders.product.find(o => (o.id === record.product_id))
-      //     return (
-      //       <p>
-      //         {obj2 && obj2.vendorProductSKU ? obj2.vendorProductSKU : 'NA'}
-      //         {console.log("here==>", text)}
-      //       </p>
-      //     )
-      //   },
-      // },
-      // {
-      //   title: 'Cost of Goods',
-      //   dataIndex: 'costofgoods',
-      //   key: 'costofgoods',
-      //   // width: 100,
-      //   align: 'right',
-      //   render: (text, record) => {
-      //     obj2 = orders.details.orders.product.find(o => (o.id === record.product_id))
-      //     return (
-      //       <p>
-      //         {obj2 && obj2.vendorProductSKU ? obj2.vendorProductPrice : 'NA'}
-      //         {console.log("here==>", text)}
-      //       </p>
-      //     )
-      //   },
-      // },
       {
         title: 'Shipping Status',
         dataIndex: 'status',
@@ -867,51 +769,7 @@ class Orders extends React.Component {
           </p>
         )
       },
-      // {
-      //   title: 'Shipping Date',
-      //   dataIndex: 'date',
-      //   // width: 100,
-      //   key: 'shipdate',
-      //   render: text => (
-      //     <p>
-      //       {text ? `${text}` : 'NA'}
-      //     </p>
-      //   ),
-      // },
-      // {
-      //   title: 'Tracking ID',
-      //   dataIndex: 'trackingID',
-      //   key: 'trackid',
-      //   // width: 100,
-      //   render: text => (
-      //     <p>
-      //       {text ? `${text}` : 'NA'}
-      //     </p>
-      //   ),
-      // },
-      // {
-      //   title: 'Vendor ID',
-      //   dataIndex: 'vendorOrderId',
-      //   key: 'vendorid',
-      //   render: text => (
-      //     <p>
-      //       {text ? `${text}` : 'NA'}
-      //     </p>
-      //   ),
-      // },
-      // {
-      //   title: 'Carrier',
-      //   dataIndex: 'carrier',
-      //   key: 'carrier',
-      //   // width: 100,
-      //   render: text => (
-      //     <p>
-      //       {text ? `${text}` : 'NA'}
-      //     </p>
-      //   ),
-      // },
       {
-        // title: {refund ? 'Refund Quantity' :'Product Quantity'},
         title: refund ? 'Refund Quantity' : 'Product Quantity',
         dataIndex: 'quantity',
         key: 'quantity',
@@ -944,7 +802,7 @@ class Orders extends React.Component {
             </p>
           )
         },
-        sorter: (a, b) => parseInt(a.quantity, 10) - parseInt(b.quantity, 10),
+        // sorter: (a, b) => parseInt(a.quantity, 10) - parseInt(b.quantity, 10),
       },
       {
         title: 'Unit Price',
@@ -1003,7 +861,7 @@ class Orders extends React.Component {
           return (
             <p>
               {/* {`${text}`} <strike style={{ color: "red" }}>{text} </strike> {console.log(prodid)}{console.log(record)} */}
-              {parseInt(obj1.quantity, 10) !== parseInt(record.quantity, 10) && record.meta.display_price.tax.value.amount > 0 ? <p>  ${parseFloat((obj1.quantity * record.meta.display_price.tax.unit.amount) / 100).toFixed(2)} </p> : `${text}`}
+              {parseInt(obj1.quantity, 10) !== parseInt(record.quantity, 10) && record.meta.display_price.tax.value.amount > 0 ? `${parseFloat((obj1.quantity * record.meta.display_price.tax.unit.amount) / 100).toFixed(2)}` : `${text}`}
             </p>
           )
         },
@@ -1030,7 +888,6 @@ class Orders extends React.Component {
     const customPanelStyle = {
       background: '#f7f7f7',
       borderRadius: 4,
-      // marginBottom: 24,
       border: 0,
       overflow: 'hidden',
     };
@@ -1167,7 +1024,7 @@ class Orders extends React.Component {
                               obj2 = orders.details.orders.product.find(o => (o.id === record1.product_id))
                               return (
                                 <Card>
-                                  <Descriptions bordered style={{ textAlign: "right" }}>
+                                  <Descriptions bordered>
                                     <Descriptions.Item label="Shipping Date" span={1}>{record1 && record1.date ? record1.date : 'NA'}</Descriptions.Item>
                                     <Descriptions.Item label="Vendor Name" span={2}>{record1 && record1.vendorname ? record1.vendorname : 'NA'}</Descriptions.Item>
                                     <Descriptions.Item label="Tracking ID" span={1}>{record1 && record1.trackingID ? record1.trackingID : 'NA'}</Descriptions.Item>
@@ -1186,7 +1043,6 @@ class Orders extends React.Component {
                         </Row>
 
                         <Row style={!refund ? { height: "220px" } : { height: "124px" }}>
-                          {/* {console.log(prodid)} */}
                           {/* {arr1 = Object.values(details1)} */}
                           {/* {somearr1 = [...arr1]} */}
                           {/* {orders.details.orders.data.map((item) => {
@@ -1227,7 +1083,6 @@ class Orders extends React.Component {
                         })} */}
 
                           {Object.keys(details1).forEach(key => {
-                            // console.log(details1[key]);
                             ta += (details1[key].quantity * details1[key].meta.display_price.without_tax.unit.amount)
                             rf += (details1[key].meta.display_price.with_tax.unit.amount - (orders.details.orders.data[key].quantity - details1[key].quantity) * details1[key].meta.display_price.with_tax.unit.amount)
                             // tq += item.quantity
@@ -1270,38 +1125,16 @@ class Orders extends React.Component {
 
                           return null
                         })} */}
-                          {/* <Card style={{ width: "300px", position: "absolute", right: "0", overflow: "auto", backgroundColor: "rgb(235, 235, 245)" }}>
-                          <table>
-                            <tbody>
-                              <tr>
-                                <td style={{ textAlign: "right" }}> Total Amount &nbsp;</td>
-                                <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid rgb(216,212,212)" }}> ${parseFloat(ta / 100).toFixed(2)} </td>
-                              </tr>
-                              <tr>
-                                <td style={{ textAlign: "right" }}> Total Tax Amount  &nbsp;</td>
-                                <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid rgb(216,212,212)" }}> {ta !== 0 ? `$${parseFloat(tt / 100).toFixed(2)}` : `$0.00`}</td>
-                              </tr>
-                              <tr>
-                                <td style={{ textAlign: "right" }}> Shipping Charges &nbsp;</td>
-                                <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid rgb(216,212,212)" }}> {shi === 0 || ta === 0 ? "Free" : `$${parseFloat(shi / 100).toFixed(2)}`}</td>
-                              </tr>
-                              <tr>
-                                <td style={{ textAlign: "right" }}> Grand Total &nbsp;</td>
-                                <td style={{ width: "96px", paddingLeft: "8px", borderLeft: "1px solid rgb(216,212,212)" }}> {ta !== 0 ? `$${parseFloat(gt / 100).toFixed(2)}` : `$0.00`} </td>
-                              </tr>
-                            </tbody>
-                          </table> */}
                           {!refund ?
-                            <Descriptions bordered style={{ textAlign: "right", width: "280px", position: "absolute", right: "0", overflow: "auto" }}>
-                              <Descriptions.Item label="Total Amount" span={3} style={{ textAlign: "right" }}>${parseFloat(ta / 100).toFixed(2)} </Descriptions.Item>
-                              <Descriptions.Item label="Taxes" span={3} style={{ textAlign: "right" }}>{ta !== 0 ? `$${parseFloat(tt / 100).toFixed(2)}` : `$0.00`}</Descriptions.Item>
-                              <Descriptions.Item label="Discounts" span={3} style={{ textAlign: "right" }}>$0.00</Descriptions.Item>
-                              <Descriptions.Item label="Shipping Charges" span={3} style={{ textAlign: "right" }}>{shi === 0 || ta === 0 ? "Free" : `$${parseFloat(shi / 100).toFixed(2)}`}</Descriptions.Item>
-                              <Descriptions.Item label="Grand Total" span={3} style={{ textAlign: "right" }}>{ta !== 0 ? `$${parseFloat(gt / 100).toFixed(2)}` : `$0.00`}</Descriptions.Item>
+                            <Descriptions bordered className="desctotal width1">
+                              <Descriptions.Item label="Total Amount" span={3} className="descrightalign">${parseFloat(ta / 100).toFixed(2)} </Descriptions.Item>
+                              <Descriptions.Item label="Taxes" span={3} className="descrightalign">{ta !== 0 ? `$${parseFloat(tt / 100).toFixed(2)}` : `$0.00`}</Descriptions.Item>
+                              <Descriptions.Item label="Discounts" span={3} className="descrightalign">$0.00</Descriptions.Item>
+                              <Descriptions.Item label="Shipping Charges" span={3} className="descrightalign">{shi === 0 || ta === 0 ? "Free" : `$${parseFloat(shi / 100).toFixed(2)}`}</Descriptions.Item>
+                              <Descriptions.Item label="Grand Total" span={3} className="descrightalign">{ta !== 0 ? `$${parseFloat(gt / 100).toFixed(2)}` : `$0.00`}</Descriptions.Item>
                             </Descriptions> :
-                            <Descriptions bordered style={{ textAlign: "right", width: "355px", position: "absolute", right: "0", overflow: "auto" }}>
-                              <Descriptions.Item label="Total Refund Amount" span={3} style={{ textAlign: "right" }}>${parseFloat(rf / 100).toFixed(2)} <Icon type={!custom ? "edit" : "close"} onClick={this.handlecustom} /></Descriptions.Item>
-                              {/* <Descriptions.Item span={3}><Button className="button" type="primary" onClick={this.handlecustom}> {!custom ? "Enter Custom Amount" : "Cancel"} </Button> </Descriptions.Item> */}
+                            <Descriptions bordered className="desctotal width2">
+                              <Descriptions.Item label="Total Refund Amount" span={3} className="descrightalign">${parseFloat(rf / 100).toFixed(2)} <Icon type={!custom ? "edit" : "close"} onClick={this.handlecustom} /></Descriptions.Item>
                               {custom ?
                                 <Descriptions.Item> <InputNumber min={0} className={error ? "errorinput" : null} defaultValue={parseFloat(rf / 100).toFixed(2)} onChange={this.changecustom} max={+parseFloat(record.meta.display_price.with_tax.amount / 100).toFixed(2)} step={0.01} ref={this.amountinput} />
                                 </Descriptions.Item> : null}
@@ -1310,11 +1143,9 @@ class Orders extends React.Component {
                                 </Descriptions.Item> : null}
                             </Descriptions>
                           }
-
                         </Row>
                       </div> : <Skeleton active />}
                     <br />
-
                     {/* {orders.details.orders ? orders.details.orders.data.map((item) => {
                     if (item.trackingID === null) {
                       count += 1;
@@ -1322,36 +1153,7 @@ class Orders extends React.Component {
                     return null
                   }) : null} */}
                     {/* <Row style={{ display: "flex", justifyContent: "center", paddingBottom: "1%" }}> */}
-                    {/* <Col span={12} style={{ textAlign: "left" }}> */}
-                    {/* <div>
-                      <Card title="Billing Address">
-                        <p>{record.billing_address.first_name}&nbsp;{record.billing_address.last_name}</p>
-                        <p> {record.billing_address.line_1}</p>
-                        <p>{record.billing_address.line_2}</p>
-                        <p>  {record.billing_address.city}
-                          , {record.billing_address.county}
-                        </p>
-                        <p>  {record.billing_address.country}
-                          , {record.billing_address.postcode}
-                        </p>
-                      </Card> */}
-                    {/* </Col> */}
-                    {/* </div> */}
                     {/* <Col span={12}> */}
-                    {/* <div style={{ marginLeft: "1%" }}>
-                      <Card title="Shipping Address">
-
-                        <p>{record.shipping_address.first_name}&nbsp;{record.shipping_address.last_name} </p>
-                        <p> {record.shipping_address.line_1} </p>
-                        <p>   {record.shipping_address.line_2} </p>
-                        <p>  {record.shipping_address.city}
-                          , {record.shipping_address.county}
-                        </p>
-                        <p>  {record.shipping_address.country}
-                          , {record.shipping_address.postcode}
-                        </p>
-                      </Card>
-                    </div> */}
                     {/* </Col> */}
                     {/* <Col span={8} style={{ textAlign: "left" }}>
                       <Card className="cardstatus" title="Shipping Details">
@@ -1370,7 +1172,6 @@ class Orders extends React.Component {
                     </Col> */}
                     {/* </Row> */}
                     {/* </Row> */}
-                    {/* <Sider > */}
                     <Collapse
                       accordion
                       bordered={false}
@@ -1411,7 +1212,7 @@ class Orders extends React.Component {
                                       type="primary"
                                       onClick={this.handleSubmit}
                                     >
-                                      Edit
+                                      Update
                                     </Button>,
                                   ]}
                                 >
@@ -1424,7 +1225,7 @@ class Orders extends React.Component {
                                         rules: [
                                           {
                                             required: true,
-                                            message: 'Please input your First-Name!!',
+                                            message: 'Please enter First-Name!!',
                                           },
                                         ],
                                       })(<Input />)}
@@ -1435,7 +1236,7 @@ class Orders extends React.Component {
                                         rules: [
                                           {
                                             required: true,
-                                            message: 'Please input your Last-Name!!',
+                                            message: 'Please enter Last-Name!!',
                                           },
                                         ],
                                       })(<Input />)}
@@ -1446,7 +1247,7 @@ class Orders extends React.Component {
                                         rules: [
                                           {
                                             required: true,
-                                            message: 'Please input Line1 of address!!',
+                                            message: 'Please enter Line1 of address!!',
                                           },
                                         ],
                                       })(<Input />)}
@@ -1454,12 +1255,6 @@ class Orders extends React.Component {
                                     <Form.Item label="Line2">
                                       {getFieldDecorator('shipping_address.line_2', {
                                         initialValue: rowdetail.shipping_address.line_2,
-                                        // rules: [
-                                        //   {
-                                        //     required: true,
-                                        //     message: 'Please input your First-Name!!',
-                                        //   },
-                                        // ],
                                       })(<Input />)}
                                     </Form.Item>
                                     <Form.Item label="City">
@@ -1468,7 +1263,7 @@ class Orders extends React.Component {
                                         rules: [
                                           {
                                             required: true,
-                                            message: 'Please input your City!!',
+                                            message: 'Please enter City!!',
                                           },
                                         ],
                                       })(<Input />)}
@@ -1476,12 +1271,6 @@ class Orders extends React.Component {
                                     <Form.Item label="County">
                                       {getFieldDecorator('shipping_address.county', {
                                         initialValue: rowdetail.shipping_address.county,
-                                        // rules: [
-                                        //   {
-                                        //     required: true,
-                                        //     message: 'Please input your First-Name!!',
-                                        //   },
-                                        // ],
                                       })(<Input />)}
                                     </Form.Item>
                                     <Form.Item label="Country">
@@ -1490,7 +1279,7 @@ class Orders extends React.Component {
                                         rules: [
                                           {
                                             required: true,
-                                            message: 'Please input your Country!!',
+                                            message: 'Please enter Country!!',
                                           },
                                         ],
                                       })(<Input />)}
@@ -1501,12 +1290,11 @@ class Orders extends React.Component {
                                         rules: [
                                           {
                                             required: true,
-                                            message: 'Please input Postal Code!!',
+                                            message: 'Please enter Postal Code!!',
                                           },
                                         ],
                                       })(<Input />)}
                                     </Form.Item>
-                                    {/* <Button type="primary" htmlType="submit" onClick={this.handleSubmit}> Update </Button> */}
                                   </Form>
                                   {/* </Card> */}
                                 </Modal>
@@ -1525,7 +1313,6 @@ class Orders extends React.Component {
                                 </Card>
                               </div>}
                           </Col>
-
                           <Col span={6}>
                             <div style={{ marginLeft: "5%" }}>
                               <Card title="Customer Details" className="card1" style={{ height: "264px" }}>
@@ -1538,71 +1325,6 @@ class Orders extends React.Component {
                         </Row>
                       </Panel>
                     </Collapse>
-                    {/* <Tabs tabPosition="left" style={{ marginLeft: "6%" }}>
-                    <TabPane tab="Billing Address" key="1">
-                      <Card title="Billing Address" className="card1">
-                        <div className="carddiv">
-                          <p>{record.billing_address.first_name}&nbsp;{record.billing_address.last_name}</p>
-                          <p> {record.billing_address.line_1}</p>
-                          <p>{record.billing_address.line_2}</p>
-                          <p>  {record.billing_address.city}
-                            , {record.billing_address.county}
-                          </p>
-                          <p>  {record.billing_address.country}
-                            , {record.billing_address.postcode}
-                          </p>
-                        </div>
-                      </Card>
-                    </TabPane>
-                    <TabPane tab="Shipping Address" key="2">
-                      <Card title="Shipping Address" className="card1">
-                        <div className="carddiv">
-                          <p>{record.shipping_address.first_name}&nbsp;{record.shipping_address.last_name} </p>
-                          <p> {record.shipping_address.line_1} </p>
-                          <p>   {record.shipping_address.line_2} </p>
-                          <p>  {record.shipping_address.city}
-                            , {record.shipping_address.county}
-                          </p>
-                          <p>  {record.shipping_address.country}
-                            , {record.shipping_address.postcode}
-                          </p>
-                        </div>
-                      </Card>
-                    </TabPane>
-                  </Tabs> */}
-                    {/* <Row>
-                    <Col span={8} style={{ marginLeft: "17%" }}>
-                      <div>
-                        <Card title="Billing Address">
-                          <p>{record.billing_address.first_name}&nbsp;{record.billing_address.last_name}</p>
-                          <p> {record.billing_address.line_1}</p>
-                          <p>{record.billing_address.line_2}</p>
-                          <p>  {record.billing_address.city}
-                            , {record.billing_address.county}
-                          </p>
-                          <p>  {record.billing_address.country}
-                            , {record.billing_address.postcode}
-                          </p>
-                        </Card>
-                      </div>
-                    </Col>
-                    <Col span={8}>
-                      <div style={{ marginLeft: "1%" }}>
-                        <Card title="Shipping Address">
-                          <p>{record.shipping_address.first_name}&nbsp;{record.shipping_address.last_name} </p>
-                          <p> {record.shipping_address.line_1} </p>
-                          <p>   {record.shipping_address.line_2} </p>
-                          <p>  {record.shipping_address.city}
-                            , {record.shipping_address.county}
-                          </p>
-                          <p>  {record.shipping_address.country}
-                            , {record.shipping_address.postcode}
-                          </p>
-                        </Card>
-                      </div>
-                    </Col>
-                  </Row> */}
-                    {/* </Sider> */}
                   </Card>
                 }
               /> : <Skeleton active />}

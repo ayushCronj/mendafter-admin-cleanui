@@ -171,5 +171,25 @@
 .closeicon {
   font-size: 20px;
   float: right;
-  height: 32px !important
+  height: 32px !important;
+}
+
+.desctotal {
+  text-align: right;
+  // width: 280px;
+  position: absolute;
+  right: 0;
+  overflow: auto;
+}
+
+.width1 {
+  width: 280px;
+}
+
+.width2 {
+  width: 355px;
+}
+
+.descrightalign {
+  text-align: right !important;
 }

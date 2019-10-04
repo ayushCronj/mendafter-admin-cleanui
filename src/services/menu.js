@@ -193,7 +193,7 @@ export async function getLeftMenuData() {
           pro: true,
         },
         {
-          title: 'Products Details',
+          title: 'Product Details',
           key: 'productsDetails',
           url: '/ecommerce/product-details',
           pro: true,
@@ -205,7 +205,7 @@ export async function getLeftMenuData() {
           pro: true,
         },
         {
-          title: 'Products List',
+          title: 'All Products',
           key: 'productsList',
           url: '/ecommerce/products-list',
           pro: true,
@@ -484,7 +484,7 @@ export async function getTopMenuData() {
               pro: true,
             },
             {
-              title: 'Products Details',
+              title: 'Product Details',
               key: 'productsDetails',
               url: '/ecommerce/product-details',
               pro: true,
@@ -496,7 +496,7 @@ export async function getTopMenuData() {
               pro: true,
             },
             {
-              title: 'Products List',
+              title: 'All Products',
               key: 'productsList',
               url: '/ecommerce/products-list',
               pro: true,
