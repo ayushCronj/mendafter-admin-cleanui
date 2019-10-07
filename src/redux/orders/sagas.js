@@ -143,11 +143,12 @@ export function* getName1(payload) {
         const result = yield call(getName, payload)
         const { data } = result
         // console.log(data)
+        // console.log(data)
         if (result.status === 200) {
             yield put({
-                type: 'orders/SET_DETAIL',
+                type: 'orders/SET_VENDOR_DETAIL',
                 payload: {
-                    orders: data.data,
+                    vendordetails: data.data,
                 },
             })
         }
@@ -172,6 +173,6 @@ export default function* rootSaga() {
         takeEvery(actions.VIEW_DETAIL, viewOrderDetail),
         takeEvery(actions.GET_FILTER_LIST, getFilterOrderSaga),
         takeEvery(actions.UPDATE_SHIPPING_ADDRESS, updateShippingAddressSaga),
-        takeEvery('getname', getName1)
+        takeEvery(actions.GET_NAME, getName1)
     ])
 }

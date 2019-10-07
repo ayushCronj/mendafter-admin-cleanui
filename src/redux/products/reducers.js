@@ -13,6 +13,8 @@ export default function blogReducer(state = initialState, action) {
                 ...state,
                 details: action.payload,
             }
+        case types.SET_VENDOR_DETAIL:
+            return { ...state, ...action.payload }
         default:
             return state
     }

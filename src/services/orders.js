@@ -81,8 +81,8 @@ export async function updateShippingAddress(body) {
 }
 
 export async function getName(body) {
-    // console.log(body)
-    const url = `http://localhost:3002/api/vendor/getVendorById/${body}`
+    console.log(body)
+    const url = `http://localhost:3002/api/vendor/getVendorById/${body.payload}`
     // console.log(url)
     return axios
         .get(url)

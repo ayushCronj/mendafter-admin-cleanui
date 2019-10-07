@@ -34,6 +34,10 @@ export default function blogReducer(state = initialState, action) {
             // console.log(obj1)
             return state
         }
+        case types.SET_VENDOR_DETAIL: {
+            // console.log(action.payload)
+            return { ...state, ...action.payload }
+        }
         default:
             return state
 

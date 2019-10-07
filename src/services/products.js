@@ -30,3 +30,20 @@ export async function viewDetail() {
     //         return error
     //     })
 }
+
+export async function getVendorName(body) {
+    // console.log(body)
+    const url = `http://localhost:3002/api/vendor/getVendorById/${body.payload}`
+    // console.log(url)
+    return axios
+        .get(url)
+        .then(response => {
+            if (response) {
+                return response
+            }
+            return false
+        })
+        .catch(error => {
+            return error
+        })
+}

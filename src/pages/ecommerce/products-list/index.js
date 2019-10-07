@@ -219,43 +219,43 @@ class ProductsList extends React.Component {
         dataIndex: 'meta.display_price.without_tax.formatted',
         key: 'price',
         render: text => <span>{text ? `${text}` : 'NA'}</span>,
-        // sorter: (a, b) => a.meta.display_price.without_tax.formatted - b.meta.display_price.without_tax.formatted,
+        // sorter: (a, b) => {a.meta && a.meta.display_price && a.meta.display_price.without_tax.formatted ? a.meta.display_price.without_tax.formatted : 0} - {b.meta && b.meta.display_price && b.meta.display_price.without_tax.formatted ? b.meta.display_price.without_tax.formatted : 0},
       },
-      {
-        title: 'Quantity',
-        dataIndex: 'meta.stock.level',
-        key: 'quantity',
-        sorter: (a, b) => a.meta.stock.level - b.meta.stock.level,
-      },
-      {
-        title: 'Availability',
-        dataIndex: 'meta.stock.availability',
-        key: 'availability',
-        // width: 100,
-        render: (text) => (
-          <p
-            className={
-              text === "out-stock"
-                ? 'font-size-12 badge badge-default'
-                : 'font-size-12 badge badge-primary'
-            }
-          >
-            {text}
-          </p>
-        ),
-        filters: [
-          {
-            text: 'Out of Stock',
-            value: 'out-stock',
-          },
-          {
-            text: 'In Stock',
-            value: 'in-stock',
-          }
-        ],
-        filterMultiple: false,
-        onFilter: (value, record) => record.meta.stock.availability.indexOf(value) === 0,
-      },
+      // {
+      //   title: 'Quantity',
+      //   dataIndex: 'meta.stock.level',
+      //   key: 'quantity',
+      //   sorter: (a, b) => a.meta.stock.level - b.meta.stock.level,
+      // },
+      // {
+      //   title: 'Availability',
+      //   dataIndex: 'meta.stock.availability',
+      //   key: 'availability',
+      //   // width: 100,
+      //   render: (text) => (
+      //     <p
+      //       className={
+      //         text === "out-stock"
+      //           ? 'font-size-12 badge badge-default'
+      //           : 'font-size-12 badge badge-primary'
+      //       }
+      //     >
+      //       {text}
+      //     </p>
+      //   ),
+      //   filters: [
+      //     {
+      //       text: 'Out of Stock',
+      //       value: 'out-stock',
+      //     },
+      //     {
+      //       text: 'In Stock',
+      //       value: 'in-stock',
+      //     }
+      //   ],
+      //   filterMultiple: false,
+      //   onFilter: (value, record) => record.meta.stock.availability.indexOf(value) === 0,
+      // },
       // {
       //   title: 'Status',
       //   dataIndex: 'status',
