@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React from 'react'
-import { Table, Button, Skeleton } from 'antd'
+import { Table, Button, Skeleton, Tooltip } from 'antd'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 // import { Link } from 'react-router-dom'
@@ -163,8 +163,8 @@ class ProductsList extends React.Component {
         ),
       },
       {
-        title: 'Type',
-        dataIndex: 'type1',
+        title: 'Commodity Type',
+        dataIndex: 'commodity_type',
         key: 'type',
         // width: 100,
         render: text => (
@@ -172,7 +172,30 @@ class ProductsList extends React.Component {
             {text ? `${text}` : 'NA'}
           </p>
         ),
+        filters: [
+          {
+            text: 'Physical',
+            value: 'physical',
+          },
+          {
+            text: 'Digital',
+            value: 'digital',
+          }
+        ],
+        filterMultiple: false,
+        onFilter: (value, record) => record.commodity_type.indexOf(value) === 0,
       },
+      // {
+      //   title: 'Type',
+      //   dataIndex: 'type1',
+      //   key: 'type',
+      //   // width: 100,
+      //   render: text => (
+      //     <p>
+      //       {text ? `${text}` : 'NA'}
+      //     </p>
+      //   ),
+      // },
       // {
       //   title: 'Attribute Set',
       //   dataIndex: 'attribute',
@@ -216,10 +239,15 @@ class ProductsList extends React.Component {
       },
       {
         title: 'Price',
-        dataIndex: 'meta.display_price.without_tax.formatted',
+        // dataIndex: 'meta.display_price.without_tax.formatted',
+        dataIndex: 'price[0].amount',
         key: 'price',
-        render: text => <span>{text ? `${text}` : 'NA'}</span>,
-        // sorter: (a, b) => {a.meta && a.meta.display_price && a.meta.display_price.without_tax.formatted ? a.meta.display_price.without_tax.formatted : 0} - {b.meta && b.meta.display_price && b.meta.display_price.without_tax.formatted ? b.meta.display_price.without_tax.formatted : 0},
+        render: text =>
+          <span>
+            {text ? `$${parseFloat(text / 100).toFixed(2)}` : 'NA'}
+          </span>,
+        // sorter: (a, b) => a.meta.display_price.without_tax.amount - b.meta.display_price.without_tax.amount,
+        sorter: (a, b) => a.price[0].amount - b.price[0].amount
       },
       // {
       //   title: 'Quantity',
@@ -274,9 +302,11 @@ class ProductsList extends React.Component {
                 state: { product },
               }}
             > */}
-            <Button icon="edit" className="mr-1" size="small" onClick={() => this.handleview(record.id)}>
-              View
-            </Button>
+            <Tooltip title="View More">
+              <Button icon="edit" className="mr-1" size="small" onClick={() => this.handleview(record.id)}>
+                View
+              </Button>
+            </Tooltip>
             {/* </Link> */}
           </span>
         ),
@@ -299,6 +329,7 @@ class ProductsList extends React.Component {
                 scroll={{ x: '100%' }}
                 columns={columns}
                 dataSource={products.products.data}
+                // dataSource={products.products.data.filter(function (x) { return x.name !== "Glamourous Head Wraps"; })}
                 rowKey={record => record.id}
               /> : <Skeleton active />}
           </div>

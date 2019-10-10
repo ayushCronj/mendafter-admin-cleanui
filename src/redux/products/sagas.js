@@ -2,7 +2,8 @@ import { notification } from 'antd'
 import { all, takeEvery, call, put } from 'redux-saga/effects'
 import {
     getProductList,
-    getVendorName
+    getVendorName,
+    editProductDetail
 } from 'services/products'
 import actions from './actions'
 
@@ -113,9 +114,42 @@ export function* getVendorNameSaga(payload) {
     }
 }
 
+
+export function* editProductDetailSaga(payload) {
+    try {
+        const result = yield call(editProductDetail, payload)
+        // const { data } = result
+        // console.log(data)
+        if (result.status === 200) {
+            notification.success({
+                message: 'Success',
+                description: 'Product Details updated successfully',
+            })
+            // yield put({
+            //     type: 'products/SET_VENDOR_DETAIL',
+            //     payload: {
+            //         vendordetails: data.data,
+            //     },
+            // })
+        }
+        else {
+            notification.warning({
+                message: 'Error',
+                description: 'Some Error Occured',
+            })
+        }
+    } catch (err) {
+        notification.warning({
+            message: 'Error',
+            description: 'Some Error Occured',
+        })
+    }
+}
+
 export default function* rootSaga() {
     yield all([
         takeEvery(actions.GET_LIST, getProductListSaga),
-        takeEvery(actions.GET_VENDOR_NAME, getVendorNameSaga)
+        takeEvery(actions.GET_VENDOR_NAME, getVendorNameSaga),
+        takeEvery(actions.EDIT_PRODUCT_DETAIL, editProductDetailSaga)
     ])
 }

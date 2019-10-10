@@ -495,7 +495,7 @@ class Orders extends React.Component {
     const { orders, form } = this.props
     const { getFieldDecorator } = form;
     const { expandedKeys, filterClick, refund, id, details1, error, form1, rowid, rowdetail, visible, custom, filterbutton, searchbutton } = this.state
-    console.log(id)
+    // console.log(id)
     // console.log(rowid, rowid1)
     // console.log("row==>", rowdetail)
     // console.log(details1)

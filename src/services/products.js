@@ -16,19 +16,29 @@ export async function getProductList() {
         })
 }
 
-export async function viewDetail() {
-    // const url = `http://localhost:3002/api/orders/getOrderItems/${body.payload.id}`
-    // return axios
-    //     .get(url)
-    //     .then(response => {
-    //         if (response) {
-    //             return response
-    //         }
-    //         return false
-    //     })
-    //     .catch(error => {
-    //         return error
-    //     })
+export async function editProductDetail(body) {
+    // console.log(body.payload)
+    const url = `http://localhost:3002/api/dashboard/updateProduct/${body.payload.data.productId}`
+    // const data = {
+    //     data: {
+    //         sku: body.payload[0].sku,
+    //         productId: body.payload[0].productId,
+    //         description: body.payload[0].description,
+    //         name: body.payload[0].name
+    //     }
+    // }
+    return axios
+        .post(url, body.payload)
+        .then(response => {
+            if (response) {
+                return response
+            }
+            return false
+        })
+        .catch(error => {
+            return error
+        })
+
 }
 
 export async function getVendorName(body) {

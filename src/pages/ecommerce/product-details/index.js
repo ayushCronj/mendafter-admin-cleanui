@@ -10,6 +10,7 @@ import './custom.scss'
 
 const { TabPane } = Tabs
 const { Option } = Select
+const { TextArea } = Input
 
 @connect(({ products }) => ({ products }))
 class ProductDetails extends React.Component {
@@ -22,13 +23,20 @@ class ProductDetails extends React.Component {
   typeinput = React.createRef();
   sluginput = React.createRef();
   statusinput = React.createRef();
+  name = React.createRef();
+  priceinput = React.createRef();
+  descinput = React.createRef();
+  skuinput = React.createRef();
   state = {
-    edit: false,
+    editvendor: false,
     editdetail: false,
-    arr: [],
+    editmaindetail: false,
+    arrMainDetail: [],
+    arrVendor: [],
     arrDetail: [],
     imgActiveStatus: [],
     images: data.images,
+    product: null,
     sku: data.sku,
     name: data.name,
     rate: data.rate,
@@ -102,7 +110,7 @@ class ProductDetails extends React.Component {
 
   editVendor = () => {
     this.setState({
-      edit: !this.state.edit
+      editvendor: !this.state.editvendor
     })
   }
 
@@ -112,75 +120,143 @@ class ProductDetails extends React.Component {
     })
   }
 
+  editMainDetail = () => {
+    this.setState({
+      editmaindetail: !this.state.editmaindetail
+    })
+  }
+
   handleEditSubmit = () => {
     const { products } = this.props
-    let arr = []
+    const { product } = this.state
+    let arrVendor = []
     let obj = {
+      productId: product.id,
       vendorName: this.nameinput.current.state.value,
       vendorId: products.vendordetails.vendorId,
       vendorProductName: this.prodnameinput.current.state.value,
-      // vendorProductPrice: this.prodpriceinput.current.state.value,
       vendorProductPrice: +parseFloat(this.prodpriceinput.current.inputNumberRef.state.value).toFixed(2),
       vendorProductId: this.prodidinput.current.state.value,
       vendorProductSKU: this.prodskuinput.current.state.value,
       fulfilmentMethod: this.fulfilinput.current.state.value
     }
-    arr.push(obj)
-    console.log(arr)
+    arrVendor.push(obj)
+    console.log(arrVendor)
     this.setState({
-      edit: false,
-      arr
+      editvendor: false,
+      arrVendor
     })
   }
 
   editDetailSubmit = () => {
-    const { products } = this.props
-    // const { prouct } = this.state
+    const { dispatch } = this.props
+    const { product } = this.state
     let arrDetail = []
+    // console.log(this.typeinput.current.rcSelect.state.value[0])
     let obj = {
-      vendorId: products.vendordetails.vendorId,
-      commodity_type: this.typeinput.current.state.value,
+      productId: product.id,
+      // vendorId: products.vendordetails.vendorId,
+      commodity_type: this.typeinput.current.rcSelect.state.value[0],
       slug: this.sluginput.current.state.value,
-      status: this.statusinput.current.state.value
+      status: this.statusinput.current.rcSelect.state.value[0]
     }
     arrDetail.push(obj)
-    console.log(arrDetail)
+    const data = {
+      data: obj
+    }
+    // console.log(arrDetail)
+    dispatch({
+      type: 'products/EDIT_PRODUCT_DETAIL',
+      payload: data
+    })
     this.setState({
       editdetail: false,
       arrDetail
     })
   }
 
+  editMainDetailSubmit = () => {
+    const { dispatch } = this.props
+    const { product } = this.state
+    let arrMainDetail = []
+    // console.log(this.name.current.state.value)
+    // console.log(this.skuinput.current.state.value)
+    // console.log(this.descinput.current.textAreaRef.value)
+    // console.log(+parseFloat(this.priceinput.current.inputNumberRef.state.value).toFixed(2))
+    let obj = {
+      productId: product.id,
+      // vendorId: products.vendordetails.vendorId,
+      // commodity_type: this.typeinput.current.state.value,
+      sku: this.skuinput.current.state.value,
+      name: this.name.current.state.value,
+      description: this.descinput.current.textAreaRef.value,
+      price: [{
+        amount: this.priceinput.current.inputNumberRef.state.value * 100,
+        currency: "USD",
+        includes_tax: true,
+        // taxCode: null
+      }]
+      // slug: this.sluginput.current.state.value,
+      // status: this.statusinput.current.state.value
+    }
+    arrMainDetail.push(obj)
+    const data = {
+      data: obj
+    }
+    // console.log(arrMainDetail)
+    dispatch({
+      type: 'products/EDIT_PRODUCT_DETAIL',
+      payload: data
+    })
+    this.setState({
+      editmaindetail: false,
+      arrMainDetail
+    })
+  }
+
   render() {
     const {
-      imgActiveStatus,
-      images,
-      sku,
-      name,
-      rate,
-      price,
-      oldPrice,
-      shortDescr,
-      description,
-      properties,
+      // imgActiveStatus,
+      // images,
+      // sku,
+      // name,
+      // rate,
+      // price,
+      // oldPrice,
+      // shortDescr,
+      // description,
+      // properties,
       product
     } = this.state
-    // let product = {}
-
-    // console.log(product)
     const { products } = this.props
-    // console.log(this.state)
 
     return (
       <div>
         <Helmet title="Products Details" />
         <section className="card">
           <div className="card-header">
-            <div className="utils__title">
+            <div className={styles.breadcrumbs}>
+              <Breadcrumb separator="">
+                <Breadcrumb.Item>
+                  <span className={styles.breadcrumbItem}>
+                    <a href="/#/ecommerce/products-list"><strong>ALL PRODUCTS</strong></a>
+                  </span>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  <span className={styles.breadcrumbItem}>
+                    <a><strong>PRODUCT DETAILS</strong></a>
+                  </span>
+
+                </Breadcrumb.Item>
+                {/* <Breadcrumb> */}
+              </Breadcrumb>
+            </div>
+          </div>
+          {/* <div className="utils__title">
               <strong>Product Details</strong> &nbsp;&nbsp;
               <Button className="button" onClick={this.handleBack}><Icon type="left" />Go Back</Button>
             </div>
-          </div>
+          </div> */}
           <div className="card-body">
             <div className="row">
               <div className="col-lg-4">
@@ -240,24 +316,66 @@ class ProductDetails extends React.Component {
                     </Breadcrumb.Item>
                   </Breadcrumb>
                 </div> */}
-                <div className={styles.sku}>
-                  {`Mend SKU: ${product && product.sku ? product.sku : 'NA'}`}
-                  <br />
-                  {/* <div className={styles.raiting}>
+                <div>
+
+                </div>
+                {/* <div className={styles.sku}> */}
+                {!this.state.editmaindetail ?
+                  <div className={styles.sku}>
+                    Mend SKU: {product && this.state.arrMainDetail.length > 0 ? this.state.arrMainDetail[0].sku : product && product.sku ? product.sku : 'NA'}
+                    &nbsp; &nbsp;
+                      <Icon theme="filled" style={{ fontSize: "18px" }} type={this.state.editmaindetail ? "close" : "edit"} onClick={this.editMainDetail} />
+                  </div>
+                  :
+                  <div className={styles.sku}>
+                    Mend SKU: <Input ref={this.skuinput} defaultValue={product && this.state.arrMainDetail.length > 0 ? this.state.arrMainDetail[0].sku : product && product.sku ? product.sku : 'NA'} style={{ width: "113px" }} />
+                    &nbsp; &nbsp;
+                      <Icon style={{ fontSize: "18px" }} type={this.state.editmaindetail ? "close" : "edit"} onClick={this.editMainDetail} />
+                  </div>
+                }
+                {/* &nbsp; &nbsp;
+                  <Icon style={{ fontSize: "16px" }} type={this.state.editmaindetail ? "close" : "edit"} onClick={this.editMainDetail} /> */}
+                {/* <br /> */}
+                {/* <div className={styles.raiting}>
                     <Rate value={rate} disabled allowHalf />
                   </div> */}
-                </div>
-                <h4 className={styles.mainTitle}>
-                  <strong>{product && product.name ? product.name : 'NA'}</strong>
-                </h4>
-                <div className={styles.price}>
-                  {`${product && product.meta.display_price ? product.meta.display_price.without_tax.formatted : "NA"}`}
-                  {/* {oldPrice && <div className={styles.priceBefore}>{`$${oldPrice}`}</div>} */}
-                </div>
+                {/* </div> */}
+                {!this.state.editmaindetail ?
+                  <h4 className={styles.mainTitle}>
+                    <strong>{product && this.state.arrMainDetail.length > 0 ? this.state.arrMainDetail[0].name : product && product.name ? product.name : 'NA'}</strong>
+                  </h4>
+                  :
+                  <h4>
+                    <strong>
+                      <Input ref={this.name} style={{ width: "45%" }} defaultValue={product && this.state.arrMainDetail.length > 0 ? this.state.arrMainDetail[0].name : product && product.name ? product.name : 'NA'} />
+                    </strong>
+                  </h4>
+                }
+                {!this.state.editmaindetail ?
+                  <div className={styles.price}>
+                    {`${product && this.state.arrMainDetail.length > 0 ? `$${parseFloat(this.state.arrMainDetail[0].price[0].amount / 100).toFixed(2)}` : product && product.price[0] ? `$${parseFloat(product.price[0].amount / 100).toFixed(2)}` : "NA"}`}
+                    {/* {oldPrice && <div className={styles.priceBefore}>{`$${oldPrice}`}</div>} */}
+                  </div>
+                  :
+                  <div className={styles.price}>
+                    <InputNumber min={0} defaultValue={product && this.state.arrMainDetail.length > 0 ? +parseFloat(this.state.arrMainDetail[0].price[0].amount / 100).toFixed(2) : product && product.price[0] ? +parseFloat(product.price[0].amount / 100).toFixed(2) : '0.00'} step={0.01} ref={this.priceinput} />
+                    {/* <Input ref={this.priceinput} style={{ width: "20%" }} defaultValue={product && product.meta.display_price ? product.meta.display_price.without_tax.formatted : "NA"} /> */}
+                  </div>
+                }
                 <hr />
-                <div className={`mb-1 ${styles.descr}`}>
-                  <p>{product && product.description ? product.description : "NA"}</p>
-                </div>
+                {!this.state.editmaindetail ?
+                  <div className={`mb-1 ${styles.descr}`}>
+                    <p>{product && this.state.arrMainDetail.length > 0 ? this.state.arrMainDetail[0].description : product && product.description ? product.description : "NA"}</p>
+                  </div>
+                  :
+                  <div className={`mb-1 ${styles.descr}`}>
+                    <TextArea ref={this.descinput} defaultValue={product && this.state.arrMainDetail.length > 0 ? this.state.arrMainDetail[0].description : product && product.description ? product.description : "NA"} autosize />
+                  </div>
+                }
+                <br />
+                {this.state.editmaindetail ?
+                  <Button className="button" type="primary" onClick={this.editMainDetailSubmit}> Edit </Button>
+                  : null}
                 <br />
                 <br />
                 <div className="row">
@@ -331,7 +449,7 @@ class ProductDetails extends React.Component {
                 </div> */}
                 <div className={styles.info}>
                   <Tabs defaultActiveKey="1">
-                    <TabPane tab="Product Information" key="1"> <Icon style={{ float: 'right', fontSize: "20px", paddingRight: "2%", paddingBottom: "1%" }} onClick={this.editDetail} type={this.state.editDetail ? "close" : "edit"} />
+                    <TabPane tab="Product Information" key="1"> <Icon style={{ float: 'right', fontSize: "20px", paddingRight: "2%", paddingBottom: "1%" }} onClick={this.editDetail} type={this.state.editdetail ? "close" : "edit"} />
                       {!this.state.editdetail ?
                         <Descriptions bordered>
                           <Descriptions.Item label="Commodity Type" span={2}> {product && this.state.arrDetail.length > 0 ? this.state.arrDetail[0].commodity_type : product && product.commodity_type ? product.commodity_type : "NA"} </Descriptions.Item>
@@ -342,36 +460,48 @@ class ProductDetails extends React.Component {
                           <Descriptions.Item label="Stock Level" span={1}> {product && product.meta.stock.level ? product.meta.stock.level : "0"} </Descriptions.Item>
                         </Descriptions> :
                         <Descriptions bordered>
-                          <Descriptions.Item label="Commodity Type" span={2}> <Input ref={this.typeinput} defaultValue={product && this.state.arrDetail.length > 0 ? this.state.arrDetail[0].commodity_type : product && product.commodity_type ? product.commodity_type : "NA"} /> </Descriptions.Item>
+                          <Descriptions.Item label="Commodity Type" span={2}>
+                            <Select ref={this.typeinput} defaultValue={product && this.state.arrDetail.length > 0 ? this.state.arrDetail[0].commodity_type : product && product.commodity_type ? product.commodity_type : "NA"}>
+                              <Option value="physical">Physical</Option>
+                              <Option value="digital">Digital</Option>
+                            </Select>
+                            {/* <Input ref={this.typeinput} defaultValue={product && this.state.arrDetail.length > 0 ? this.state.arrDetail[0].commodity_type : product && product.commodity_type ? product.commodity_type : "NA"} />  */}
+                          </Descriptions.Item>
                           <Descriptions.Item label="Slug" span={1}> <Input ref={this.sluginput} defaultValue={product && this.state.arrDetail.length > 0 ? this.state.arrDetail[0].slug : product && product.slug ? product.slug : "NA"} /></Descriptions.Item>
-                          <Descriptions.Item label="Status" span={2}> <Input ref={this.statusinput} defaultValue={product && this.state.arrDetail.length > 0 ? this.state.arrDetail[0].status : product && product.status ? product.status : "NA"} /></Descriptions.Item>
+                          <Descriptions.Item label="Status" span={2}>
+                            <Select ref={this.statusinput} defaultValue={product && this.state.arrDetail.length > 0 ? this.state.arrDetail[0].status : product && product.status ? product.status : "NA"}>
+                              <Option value="live">Live</Option>
+                              <Option value="draft">Draft</Option>
+                            </Select>
+                            {/* <Input ref={this.statusinput} defaultValue={product && this.state.arrDetail.length > 0 ? this.state.arrDetail[0].status : product && product.status ? product.status : "NA"} /> */}
+                          </Descriptions.Item>
                           <Descriptions.Item label="Product Added On" span={1}> <Input defaultValue={product && product.meta.timestamps && product.meta.timestamps.created_at ? JSON.stringify(new Date(product.meta.timestamps.created_at)).slice(1, 11) : "NA"} disabled /> </Descriptions.Item>
                           <Descriptions.Item label="Stock Availability" span={2}> <Input disabled defaultValue={product && product.meta.stock.availability ? product.meta.stock.availability : "NA"} /></Descriptions.Item>
                           <Descriptions.Item label="Stock Level" span={1}> <Input disabled defaultValue={product && product.meta.stock.level ? product.meta.stock.level : "0"} /></Descriptions.Item>
                           <Descriptions.Item className="desitem" span={3}> <Button className="button" type="primary" onClick={this.editDetailSubmit}> Edit </Button> </Descriptions.Item>
                         </Descriptions>}
                     </TabPane>
-                    <TabPane tab="Vendor Information" key="2"> <Icon style={{ float: 'right', fontSize: "20px", paddingRight: "2%", paddingBottom: "1%" }} onClick={this.editVendor} type={this.state.edit ? "close" : "edit"} />
-                      {!this.state.edit ? product && products && products.vendordetails && products.vendordetails.vendorId === product.vendorId ?
+                    <TabPane tab="Vendor Information" key="2"> <Icon style={{ float: 'right', fontSize: "20px", paddingRight: "2%", paddingBottom: "1%" }} onClick={this.editVendor} type={this.state.editvendor ? "close" : "edit"} />
+                      {!this.state.editvendor ? product && products && products.vendordetails && products.vendordetails.vendorId === product.vendorId ?
                         <Descriptions bordered>
-                          <Descriptions.Item label="Vendor Name" span={2}> {product && products && this.state.arr.length > 0 && this.state.arr[0].vendorName ? this.state.arr[0].vendorName : products.vendordetails ? products.vendordetails.vendorName : "NA"} </Descriptions.Item>
-                          <Descriptions.Item label="Vendor Product ID" span={1}> {product && this.state.arr.length > 0 && this.state.arr[0].vendorProductId ? this.state.arr[0].vendorProductId : product && product.vendorProductId ? product.vendorProductId : "NA"} </Descriptions.Item>
-                          <Descriptions.Item label="Vendor Product Name" span={2}> {product && this.state.arr.length > 0 && this.state.arr[0].vendorProductName ? this.state.arr[0].vendorProductName : product && product.vendorProductName ? product.vendorProductName : "NA"} </Descriptions.Item>
-                          <Descriptions.Item label="Vendor Product Price" span={1}> {product && this.state.arr.length > 0 && this.state.arr[0].vendorProductPrice ? this.state.arr[0].vendorProductPrice : product && product.vendorProductPrice ? product.vendorProductPrice : "NA"} </Descriptions.Item>
-                          <Descriptions.Item label="Vendor Product SKU" span={2}> {product && this.state.arr.length > 0 && this.state.arr[0].vendorProductSKU ? this.state.arr[0].vendorProductSKU : product && product.vendorProductSKU ? product.vendorProductSKU : "NA"} </Descriptions.Item>
-                          <Descriptions.Item label="Vendor Fulfilment Method" span={1}> {product && products && this.state.arr.length > 0 && this.state.arr[0].fulfilmentMethod ? this.state.arr[0].fulfilmentMethod : products.vendordetails ? products.vendordetails.fulfilmentMethod : "NA"} </Descriptions.Item>
+                          <Descriptions.Item label="Vendor Name" span={2}> {product && products && this.state.arrVendor.length > 0 && this.state.arrVendor[0].vendorName ? this.state.arrVendor[0].vendorName : products.vendordetails ? products.vendordetails.vendorName : "NA"} </Descriptions.Item>
+                          <Descriptions.Item label="Vendor Product ID" span={1}> {product && this.state.arrVendor.length > 0 && this.state.arrVendor[0].vendorProductId ? this.state.arrVendor[0].vendorProductId : product && product.vendorProductId ? product.vendorProductId : "NA"} </Descriptions.Item>
+                          <Descriptions.Item label="Vendor Product Name" span={2}> {product && this.state.arrVendor.length > 0 && this.state.arrVendor[0].vendorProductName ? this.state.arrVendor[0].vendorProductName : product && product.vendorProductName ? product.vendorProductName : "NA"} </Descriptions.Item>
+                          <Descriptions.Item label="Vendor Product Price" span={1}> {product && this.state.arrVendor.length > 0 && this.state.arrVendor[0].vendorProductPrice ? `$${this.state.arrVendor[0].vendorProductPrice}` : product && product.vendorProductPrice ? `$${product.vendorProductPrice}` : "NA"} </Descriptions.Item>
+                          <Descriptions.Item label="Vendor Product SKU" span={2}> {product && this.state.arrVendor.length > 0 && this.state.arrVendor[0].vendorProductSKU ? this.state.arrVendor[0].vendorProductSKU : product && product.vendorProductSKU ? product.vendorProductSKU : "NA"} </Descriptions.Item>
+                          <Descriptions.Item label="Vendor Fulfilment Method" span={1}> {product && products && this.state.arrVendor.length > 0 && this.state.arrVendor[0].fulfilmentMethod ? this.state.arrVendor[0].fulfilmentMethod : products.vendordetails ? products.vendordetails.fulfilmentMethod : "NA"} </Descriptions.Item>
                         </Descriptions> : <Skeleton active />
                         :
                         <Descriptions bordered>
-                          <Descriptions.Item label="Vendor Name" span={2}><Input ref={this.nameinput} defaultValue={product && products && this.state.arr.length > 0 && this.state.arr[0].vendorName ? this.state.arr[0].vendorName : products.vendordetails ? products.vendordetails.vendorName : "NA"} /></Descriptions.Item>
-                          <Descriptions.Item label="Vendor Product ID" span={1}><Input ref={this.prodidinput} defaultValue={product && this.state.arr.length > 0 && this.state.arr[0].vendorProductId ? this.state.arr[0].vendorProductId : product && product.vendorProductId ? product.vendorProductId : "NA"} /></Descriptions.Item>
-                          <Descriptions.Item label="Vendor Product Name" span={2}><Input ref={this.prodnameinput} defaultValue={product && this.state.arr.length > 0 && this.state.arr[0].vendorProductName ? this.state.arr[0].vendorProductName : product && product.vendorProductName ? product.vendorProductName : "NA"} /></Descriptions.Item>
+                          <Descriptions.Item label="Vendor Name" span={2}><Input ref={this.nameinput} defaultValue={product && products && this.state.arrVendor.length > 0 && this.state.arrVendor[0].vendorName ? this.state.arrVendor[0].vendorName : products.vendordetails ? products.vendordetails.vendorName : "NA"} /></Descriptions.Item>
+                          <Descriptions.Item label="Vendor Product ID" span={1}><Input ref={this.prodidinput} defaultValue={product && this.state.arrVendor.length > 0 && this.state.arrVendor[0].vendorProductId ? this.state.arrVendor[0].vendorProductId : product && product.vendorProductId ? product.vendorProductId : "NA"} /></Descriptions.Item>
+                          <Descriptions.Item label="Vendor Product Name" span={2}><Input ref={this.prodnameinput} defaultValue={product && this.state.arrVendor.length > 0 && this.state.arrVendor[0].vendorProductName ? this.state.arrVendor[0].vendorProductName : product && product.vendorProductName ? product.vendorProductName : "NA"} /></Descriptions.Item>
                           <Descriptions.Item label="Vendor Product Price" span={1}>
-                            <InputNumber min={0} defaultValue={product && this.state.arr.length > 0 && this.state.arr[0].vendorProductPrice ? this.state.arr[0].vendorProductPrice : product && product.vendorProductPrice ? product.vendorProductPrice : "0.00"} step={0.01} ref={this.prodpriceinput} />
-                            {/* <Input ref={this.prodpriceinput} defaultValue={product && this.state.arr.length > 0 && this.state.arr[0].vendorProductPrice ? this.state.arr[0].vendorProductPrice : product && product.vendorProductPrice ? product.vendorProductPrice : "NA"} /> */}
+                            <InputNumber min={0} defaultValue={product && this.state.arrVendor.length > 0 && this.state.arrVendor[0].vendorProductPrice ? this.state.arrVendor[0].vendorProductPrice : product && product.vendorProductPrice ? product.vendorProductPrice : "0.00"} step={0.01} ref={this.prodpriceinput} />
+                            {/* <Input ref={this.prodpriceinput} defaultValue={product && this.state.arrVendor.length > 0 && this.state.arrVendor[0].vendorProductPrice ? this.state.arrVendor[0].vendorProductPrice : product && product.vendorProductPrice ? product.vendorProductPrice : "NA"} /> */}
                           </Descriptions.Item>
-                          <Descriptions.Item label="Vendor Product SKU" span={2}><Input ref={this.prodskuinput} defaultValue={product && this.state.arr.length > 0 && this.state.arr[0].vendorProductSKU ? this.state.arr[0].vendorProductSKU : product && product.vendorProductSKU ? product.vendorProductSKU : "NA"} /></Descriptions.Item>
-                          <Descriptions.Item label="Vendor Fulfilment Method" span={1}><Input ref={this.fulfilinput} defaultValue={product && products && this.state.arr.length > 0 && this.state.arr[0].fulfilmentMethod ? this.state.arr[0].fulfilmentMethod : products.vendordetails ? products.vendordetails.fulfilmentMethod : "NA"} /></Descriptions.Item>
+                          <Descriptions.Item label="Vendor Product SKU" span={2}><Input ref={this.prodskuinput} defaultValue={product && this.state.arrVendor.length > 0 && this.state.arrVendor[0].vendorProductSKU ? this.state.arrVendor[0].vendorProductSKU : product && product.vendorProductSKU ? product.vendorProductSKU : "NA"} /></Descriptions.Item>
+                          <Descriptions.Item label="Vendor Fulfilment Method" span={1}><Input ref={this.fulfilinput} defaultValue={product && products && this.state.arrVendor.length > 0 && this.state.arrVendor[0].fulfilmentMethod ? this.state.arrVendor[0].fulfilmentMethod : products.vendordetails ? products.vendordetails.fulfilmentMethod : "NA"} /></Descriptions.Item>
                           <Descriptions.Item className="desitem" span={3}> <Button className="button" type="primary" onClick={this.handleEditSubmit}> Edit </Button> </Descriptions.Item>
                         </Descriptions>
                       }

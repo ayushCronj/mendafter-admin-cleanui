@@ -22,24 +22,24 @@ export async function viewDetail(body) {
         .get(url)
         .then(async response => {
             if (await response) {
-                const promiseAr = []
-                response.data.product.map((item) => {
-                    if (!Array.isArray(item)) {
-                        promiseAr.push(getName(item.vendorId))
-                        // console.log(some)
-                    }
-                    return null
-                })
-                Promise.all(promiseAr).then(odata => {
-                    // console.log(odata)
-                    odata.map((item)=> {
-                        console.log(item.data.data.vendorName)
-                        return null
-                    })
-                    // response.data.odata = odata
-                    return response
-                })
-                // return response
+                // const promiseAr = []
+                // response.data.product.map((item) => {
+                //     if (!Array.isArray(item)) {
+                //         promiseAr.push(getName(item.vendorId))
+                //         // console.log(some)
+                //     }
+                //     return null
+                // })
+                // Promise.all(promiseAr).then(odata => {
+                //     // console.log(odata)
+                //     odata.map((item)=> {
+                //         console.log(item.data.data.vendorName)
+                //         return null
+                //     })
+                //     // response.data.odata = odata
+                //     return response
+                // })
+                return response
             }
             return response
         })
